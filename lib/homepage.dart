@@ -23,12 +23,7 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class SelezionaGioco extends StatefulWidget {
-  @override
-  SelezonaGiocoState createState() => SelezonaGiocoState();
-}
-
-class SelezonaGiocoState extends State<SelezionaGioco> {
+class SelezionaGioco extends StatelessWidget {
   List<String> _giochi = new List();
 
   @override
@@ -39,22 +34,26 @@ class SelezonaGiocoState extends State<SelezionaGioco> {
         child: ListView.separated(
             itemCount: _giochi.length,
             itemBuilder: (context, itemCount) {
-              return getCustomChildElement(itemCount);
+              return getCustomChildElement(itemCount, context);
             },
             separatorBuilder: (context, itemCount) {
               return Divider();
             }));
   }
 
-  ListTile getCustomChildElement(int index) {
+  ListTile getCustomChildElement(int index, BuildContext context) {
     return new ListTile(
-        title: Align(
-            alignment: Alignment.center,
-            child: Text(_giochi[index], style: TextStyle(color: Colors.white))),
-        leading: CircleAvatar(
-            backgroundColor: Colors.white,
-            child: Image.asset(getImageAssets(_giochi[index]))),
-        trailing: Icon(Icons.keyboard_arrow_right));
+      title: Align(
+          alignment: Alignment.center,
+          child: Text(_giochi[index], style: TextStyle(color: Colors.white))),
+      leading: CircleAvatar(
+          backgroundColor: Colors.white,
+          child: Image.asset(getImageAssets(_giochi[index]))),
+      trailing: Icon(Icons.keyboard_arrow_right),
+      onTap: () {
+        onGiocoSelected(_giochi[index], context);
+      },
+    );
   }
 
   String getImageAssets(String gioco) {
@@ -96,9 +95,26 @@ class SelezonaGiocoState extends State<SelezionaGioco> {
     _giochi.add(PRESIDENTE);
   }
 
+  void onGiocoSelected(String gioco, context) {
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => SelezionaGiocatori(gioco)));
+  }
+}
+
+class SelezionaGiocatori extends StatelessWidget {
+  String gioco;
+
+  SelezionaGiocatori(this.gioco);
+
   @override
-  void setState(fn) {
-    // TODO: implement setState
-    super.setState(fn);
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Seleziona giocatori'),
+      ),
+      body: Center(
+        child: Text(gioco),
+      ),
+    );
   }
 }
