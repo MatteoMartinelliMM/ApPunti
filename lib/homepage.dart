@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Model/Constants.dart';
 
+import 'Model/Giocatore.dart';
+
 main() => runApp(ContaPunti());
 
 class ContaPunti extends StatelessWidget {
@@ -109,12 +111,133 @@ class SelezionaGiocatori extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Seleziona giocatori'),
+        appBar: AppBar(
+          title: Text('Seleziona giocatori'),
+        ),
+        body: Center(child: SelezionaGiocatoriBody(gioco)));
+  }
+}
+
+class SelezionaGiocatoriBody extends StatefulWidget {
+  String gioco;
+
+  SelezionaGiocatoriBody(this.gioco);
+
+  @override
+  State<StatefulWidget> createState() {
+    return SelezionaGiocatoriState(gioco);
+  }
+}
+
+class SelezionaGiocatoriState extends State<SelezionaGiocatoriBody> {
+  List<Giocatore> _giocatori = new List();
+  String gioco;
+
+  SelezionaGiocatoriState(this.gioco);
+
+  @override
+  Widget build(BuildContext context) {
+    switch (gioco) {
+      case SCOPONE_SCIENTIFICO:
+        return giocatoriScopone();
+      case PRESIDENTE:
+      case ASSE:
+        return giocatoriPresidente();
+    }
+  }
+
+  Widget giocatoriScopone() {
+    return Center(
+      child: Row(
+        children: <Widget>[
+          Align(
+            alignment: Alignment.centerLeft,
+            child: teamElement(),
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: Text("Vs.", style: TextStyle(fontSize: 22)),
+          ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: teamElement(),
+          )
+        ],
       ),
-      body: Center(
-        child: Text(gioco),
-      ),
+    );
+  }
+
+  Widget teamElement() {
+    return Card(
+      elevation: 2.0,
+      child: teamCard(),
+    );
+  }
+
+  Widget teamCard() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        ListTile(
+          title: Text('Giocatore 1'),
+          leading: CircleAvatar(
+            backgroundColor: Colors.white,
+            child: Image.asset('assets/image/defuser.png'),
+          ),
+        ),
+        ListTile(
+            title: Text('Giocatore 2'),
+            leading: CircleAvatar(
+              backgroundColor: Colors.white,
+              child: Image.asset('assets/image/defuser.png'),
+            )),
+      ],
+    );
+  }
+
+  Column giocatoriPresidente() {
+    TextEditingController giocatoreController = new TextEditingController();
+    return Column(
+      children: <Widget>[
+        Padding(
+            padding: EdgeInsets.only(top: 8.0, left: 4.0, right: 4.0),
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: TextField(
+                textInputAction: TextInputAction.done,
+                controller: giocatoreController,
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: "Aggiungi o crea un nuovo giocatore"),
+                onEditingComplete: () {
+                  setState(() {
+                    _giocatori.add(
+                        new Giocatore.newGiocatore(giocatoreController.text));
+                  });
+                },
+              ),
+            )),
+        Expanded(
+            child: ListView.builder(
+                itemBuilder: (context, index) {
+                  return playerTile(context, _giocatori[index]);
+                },
+                /*separatorBuilder: (context, index) {
+                  return Divider();
+                },*/
+                itemCount: _giocatori.length)),
+      ],
+    );
+  }
+
+  Widget playerTile(context, giocatore) {
+    return Card(
+      child: ListTile(
+          title: Text(giocatore.name),
+          leading: CircleAvatar(
+            backgroundColor: Colors.white,
+            child: Image.asset('assets/image/defuser.png'),
+          )),
     );
   }
 }
