@@ -148,20 +148,26 @@ class SelezionaGiocatoriState extends State<SelezionaGiocatoriBody> {
 
   Widget giocatoriScopone() {
     return Center(
-      child: Row(
+      child: Column(
         children: <Widget>[
-          Align(
-            alignment: Alignment.centerLeft,
-            child: teamElement(),
-          ),
-          Align(
-            alignment: Alignment.center,
-            child: Text("Vs.", style: TextStyle(fontSize: 22)),
-          ),
-          Align(
-            alignment: Alignment.centerRight,
-            child: teamElement(),
-          )
+          Flexible(
+              flex: 10,
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: teamElement(),
+              )),
+          Flexible(
+              flex: 2,
+              child: Align(
+                alignment: Alignment.center,
+                child: Image.asset('assets/image/vs.png'),
+              )),
+          Flexible(
+              flex: 10,
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: teamElement(),
+              ))
         ],
       ),
     );
@@ -170,27 +176,83 @@ class SelezionaGiocatoriState extends State<SelezionaGiocatoriBody> {
   Widget teamElement() {
     return Card(
       elevation: 2.0,
-      child: teamCard(),
+      child: Column(
+        children: <Widget>[
+          Flexible(child: teamCard()),
+          Flexible(child: teamCard())
+        ],
+      ),
     );
   }
 
   Widget teamCard() {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        ListTile(
-          title: Text('Giocatore 1'),
-          leading: CircleAvatar(
-            backgroundColor: Colors.white,
-            child: Image.asset('assets/image/defuser.png'),
+    return Container(
+      child: Column(
+        children: <Widget>[
+          Flexible(
+            flex: 1,
+            child: nameAndImageFromPlayer(),
           ),
+          Flexible(child: tabellaPunteggi()),
+        ],
+      ),
+    );
+  }
+
+  Visibility tabellaPunteggi() { //TODO: rendere dinamica la creazione delle colonne
+    return Visibility(
+        visible: true,
+        child: Padding(
+            padding: EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
+            child: Table(
+              children: [
+                TableRow(children: [
+                  Center(child: Text("PARTITE GIOCATE")),
+                  Center(child: Text("PARTITE VINTE")),
+                  Center(child: Text("PERCENTUALE"))
+                ]),
+                TableRow(children: [
+                  Center(
+                      child: Text("20",
+                          style: TextStyle(fontStyle: FontStyle.italic))),
+                  Center(
+                      child: Text("20",
+                          style: TextStyle(fontStyle: FontStyle.italic))),
+                  Center(
+                      child: Text("20",
+                          style: TextStyle(fontStyle: FontStyle.italic))),
+                ])
+              ],
+            )));
+  }
+
+  Row nameAndImageFromPlayer() {
+    return Row(
+      children: <Widget>[
+        Flexible(
+          flex: 1,
+          child: Padding(
+              padding: EdgeInsets.only(left: 8.0),
+              child: Container(
+                width: 100,
+                height: 100,
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                        fit: BoxFit.fill,
+                        image: AssetImage('assets/image/defuser.png'))),
+              )),
         ),
-        ListTile(
-            title: Text('Giocatore 2'),
-            leading: CircleAvatar(
-              backgroundColor: Colors.white,
-              child: Image.asset('assets/image/defuser.png'),
-            )),
+        Flexible(
+          flex: 4,
+          child: Padding(
+              padding: EdgeInsets.only(right: 8.0),
+              child: TextField(
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: "Inserisci giocatore"),
+              )),
+        )
       ],
     );
   }
