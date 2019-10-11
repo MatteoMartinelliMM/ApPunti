@@ -139,14 +139,14 @@ class SelezionaGiocatoriState extends State<SelezionaGiocatoriBody> {
   Widget build(BuildContext context) {
     switch (gioco) {
       case SCOPONE_SCIENTIFICO:
-        return giocatoriScopone();
+        return giocatoriScopone(_giocatori);
       case PRESIDENTE:
       case ASSE:
         return giocatoriPresidente();
     }
   }
 
-  Widget giocatoriScopone() {
+  Widget giocatoriScopone(List<Giocatore> giocatori) {
     return Center(
       child: Column(
         children: <Widget>[
@@ -154,7 +154,7 @@ class SelezionaGiocatoriState extends State<SelezionaGiocatoriBody> {
               flex: 10,
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: teamElement(),
+                child: teamElement(giocatori, 0, 1),
               )),
           Flexible(
               flex: 2,
@@ -166,42 +166,51 @@ class SelezionaGiocatoriState extends State<SelezionaGiocatoriBody> {
               flex: 10,
               child: Align(
                 alignment: Alignment.centerRight,
-                child: teamElement(),
+                child: teamElement(giocatori, 2, 3),
               ))
         ],
       ),
     );
   }
 
-  Widget teamElement() {
+  Widget teamElement(
+      List<Giocatore> giocatori, int giocatore1, int giocatore2) {
+    List<Giocatore> subListGiocatori = new List();
+    if (giocatori.isEmpty) {
+      subListGiocatori.insert(giocatore1, new Giocatore.newGiocatore(""));
+      subListGiocatori.insert(giocatore2, new Giocatore.newGiocatore(""));
+    } else {
+      subListGiocatori = giocatori.getRange(giocatore1, giocatore2);
+    }
     return Card(
       elevation: 2.0,
       child: Column(
         children: <Widget>[
-          Flexible(child: teamCard()),
-          Flexible(child: teamCard())
+          Flexible(child: teamCard(subListGiocatori[giocatore1], giocatore1)),
+          Flexible(child: teamCard(subListGiocatori[giocatore2], giocatore2))
         ],
       ),
     );
   }
 
-  Widget teamCard() {
+  Widget teamCard(Giocatore giocatore, int indexGiocatore) {
     return Container(
       child: Column(
         children: <Widget>[
           Flexible(
             flex: 1,
-            child: nameAndImageFromPlayer(),
+            child: nameAndImageFromPlayer(giocatore, indexGiocatore),
           ),
-          Flexible(child: tabellaPunteggi()),
+          Flexible(child: tabellaPunteggi(giocatore)),
         ],
       ),
     );
   }
 
-  Visibility tabellaPunteggi() { //TODO: rendere dinamica la creazione delle colonne
+  Visibility tabellaPunteggi(Giocatore giocatore) {
+    //TODO: rendere dinamica la creazione delle colonne
     return Visibility(
-        visible: true,
+        visible: haveGiocatore(giocatore),
         child: Padding(
             padding: EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
             child: Table(
@@ -226,7 +235,7 @@ class SelezionaGiocatoriState extends State<SelezionaGiocatoriBody> {
             )));
   }
 
-  Row nameAndImageFromPlayer() {
+  Row nameAndImageFromPlayer(Giocatore giocatore, int indexGiocatore) {
     return Row(
       children: <Widget>[
         Flexible(
@@ -301,5 +310,9 @@ class SelezionaGiocatoriState extends State<SelezionaGiocatoriBody> {
             child: Image.asset('assets/image/defuser.png'),
           )),
     );
+  }
+
+  bool haveGiocatore(Giocatore giocatore) {
+    return giocatore.name != null && giocatore.name.isNotEmpty;
   }
 }
