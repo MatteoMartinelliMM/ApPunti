@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_app/Model/Constants.dart';
 
 import 'Model/Giocatore.dart';
@@ -114,8 +115,7 @@ class SelezionaGiocatori extends StatelessWidget {
       appBar: AppBar(
         title: Text('Seleziona giocatori'),
       ),
-      body: Center(child: SelezionaGiocatoriBody(gioco)),
-        resizeToAvoidBottomInset : false, /*adjiustPan*/
+      body: SelezionaGiocatoriBody(gioco),
     );
   }
 }
@@ -132,20 +132,39 @@ class SelezionaGiocatoriBody extends StatefulWidget {
 }
 
 class SelezionaGiocatoriState extends State<SelezionaGiocatoriBody> {
-  List<Giocatore> _giocatori;
+  List<Giocatore> giocatori;
+  List<FocusNode> focusNodeList;
+  List<TextEditingController> controllerList;
   String gioco;
 
   SelezionaGiocatoriState(this.gioco);
 
   @override
+  void initState() {
+    switch (gioco) {
+      case SCOPONE_SCIENTIFICO:
+        giocatori = new List(4);
+        focusNodeList = new List();
+        controllerList = new List();
+        for (int i = 0; i < giocatori.length; i++) {
+          controllerList.add(new TextEditingController());
+          focusNodeList.add(new FocusNode());
+        }
+        break;
+      case PRESIDENTE:
+      case ASSE:
+        giocatori = new List();
+        break;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     switch (gioco) {
       case SCOPONE_SCIENTIFICO:
-        _giocatori = new List(4);
-        return giocatoriScopone(_giocatori);
+        return giocatoriScopone(giocatori);
       case PRESIDENTE:
       case ASSE:
-        _giocatori = new List();
         return giocatoriPresidente();
     }
   }
@@ -157,23 +176,41 @@ class SelezionaGiocatoriState extends State<SelezionaGiocatoriBody> {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Flexible(
-                flex: 10,
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: teamElement(giocatori, 0, 1),
-                )),
+              flex: 10,
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: teamElement(giocatori, 0, 1),
+              ),
+            ),
             Flexible(
-                flex: 2,
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Image.asset('assets/image/vs.png'),
-                )),
+              flex: 1,
+              child: Align(
+                alignment: Alignment.center,
+                child: Image.asset('assets/image/vs_small.png'),
+              ),
+            ),
             Flexible(
-                flex: 10,
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: teamElement(giocatori, 2, 3),
-                ))
+              flex: 10,
+              child: Align(
+                alignment: Alignment.bottomRight,
+                child: teamElement(giocatori, 2, 3),
+              ),
+            ),
+            Flexible(
+              flex: 2,
+              child: RaisedButton(
+                child: Text("Gioca"),
+                onPressed: !allPlayersAreSetted()
+                    ? null
+                    : () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    ContaPuntiGiocatori(giocatori)));
+                      },
+              ),
+            )
           ],
         ),
       ),
@@ -189,9 +226,11 @@ class SelezionaGiocatoriState extends State<SelezionaGiocatoriBody> {
     return Card(
       elevation: 2.0,
       child: Column(
+        mainAxisSize: MainAxisSize.max,
         children: <Widget>[
-          Flexible(child: teamCard(giocatori[giocatore1], giocatore1)),
-          Flexible(child: teamCard(giocatori[giocatore2], giocatore2))
+          teamCard(giocatori[giocatore1], giocatore1),
+          //TODO AGGIUNGERE FLEX
+          teamCard(giocatori[giocatore2], giocatore2)
         ],
       ),
     );
@@ -200,67 +239,108 @@ class SelezionaGiocatoriState extends State<SelezionaGiocatoriBody> {
   Widget teamCard(Giocatore giocatore, int indexGiocatore) {
     return Container(
       child: Column(
+        mainAxisSize: MainAxisSize.max,
         children: <Widget>[
-          Flexible(
-            flex: 1,
-            child: nameAndImageFromPlayer(giocatore, indexGiocatore),
-          ),
-          Flexible(child: tabellaPunteggi(giocatore)),
+          nameAndImageFromPlayer(
+              giocatore, indexGiocatore, controllerList[indexGiocatore]),
+          tabellaPunteggi(giocatore),
         ],
       ),
     );
   }
 
   Visibility tabellaPunteggi(Giocatore giocatore) {
-    //TODO: rendere dinamica la creazione delle colonne
     return Visibility(
-        visible: haveGiocatore(giocatore),
+        visible: true, //haveGiocatore(giocatore),
         child: Padding(
-            padding: EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
+            padding: EdgeInsets.only(top: 16.0, bottom: 16.0),
             child: Table(
               children: [
                 TableRow(children: [
-                  Center(child: Text("PARTITE GIOCATE")),
-                  Center(child: Text("PARTITE VINTE")),
-                  Center(child: Text("PERCENTUALE"))
+                  Center(
+                    child: Text(
+                      "PARTITE GIOCATE",
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  Center(
+                    child: Text(
+                      "PARTITE VINTE",
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  Center(
+                    child: Text(
+                      "PERCENTUALE",
+                      textAlign: TextAlign.center,
+                    ),
+                  )
                 ]),
                 TableRow(children: [
                   Center(
-                      child: Text("20",
-                          style: TextStyle(fontStyle: FontStyle.italic))),
+                    child: Text(
+                      "20",
+                      style: TextStyle(fontStyle: FontStyle.italic),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                   Center(
-                      child: Text("20",
-                          style: TextStyle(fontStyle: FontStyle.italic))),
+                    child: Text(
+                      "20",
+                      style: TextStyle(fontStyle: FontStyle.italic),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                   Center(
-                      child: Text("20",
-                          style: TextStyle(fontStyle: FontStyle.italic))),
+                    child: Text(
+                      "20",
+                      style: TextStyle(fontStyle: FontStyle.italic),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                 ])
               ],
             )));
   }
 
-  Row nameAndImageFromPlayer(Giocatore giocatore, int indexGiocatore) {
+  Row nameAndImageFromPlayer(Giocatore giocatore, int indexGiocatore,
+      TextEditingController controller) {
+    controller.text = giocatore.name;
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        Flexible(
-          flex: 1,
-          child: Padding(
-              padding: EdgeInsets.only(left: 8.0),
-              child: Container(
-                width: 80,
-                height: 80,
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                        fit: BoxFit.fill,
-                        image: AssetImage('assets/image/defuser.png'))),
-              )),
-        ),
-        Flexible(
-          flex: 4,
+        Padding(
+            padding: EdgeInsets.only(left: 8.0),
+            child: Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                      fit: BoxFit.fill,
+                      image: AssetImage('assets/image/defuser.png'))),
+            )),
+        Expanded(
           child: Padding(
               padding: EdgeInsets.only(right: 8.0),
               child: TextField(
+                controller: controller,
+                focusNode: focusNodeList[indexGiocatore],
+                textInputAction: TextInputAction.next,
+                onSubmitted: (value) {
+                  setState(() {
+                    focusNodeList[indexGiocatore].unfocus();
+                    if (focusNodeList.length - 1 != indexGiocatore)
+                      FocusScope.of(context)
+                          .requestFocus(focusNodeList[indexGiocatore + 1]);
+                    else
+                      SystemChannels.textInput
+                          .invokeMethod('TextInput.hide'); //CLOSE KEYBOARD
+                    if (controller.text != null && controller.text.isNotEmpty) {
+                      giocatori[indexGiocatore].name = controller.text;
+                    }
+                  });
+                },
                 decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     hintText: "Inserisci giocatore"),
@@ -286,8 +366,9 @@ class SelezionaGiocatoriState extends State<SelezionaGiocatoriBody> {
                     labelText: "Aggiungi o crea un nuovo giocatore"),
                 onEditingComplete: () {
                   setState(() {
-                    if (giocatoreController.text != null)
-                      _giocatori.add(
+                    if (giocatoreController.text != null &&
+                        giocatoreController.text.isNotEmpty)
+                      giocatori.add(
                           new Giocatore.newGiocatore(giocatoreController.text));
                   });
                 },
@@ -296,12 +377,12 @@ class SelezionaGiocatoriState extends State<SelezionaGiocatoriBody> {
         Expanded(
             child: ListView.builder(
                 itemBuilder: (context, index) {
-                  return playerTile(context, _giocatori[index]);
+                  return playerTile(context, giocatori[index]);
                 },
                 /*separatorBuilder: (context, index) {
                   return Divider();
                 },*/
-                itemCount: _giocatori.length)),
+                itemCount: giocatori.length)),
       ],
     );
   }
@@ -320,4 +401,43 @@ class SelezionaGiocatoriState extends State<SelezionaGiocatoriBody> {
   bool haveGiocatore(Giocatore giocatore) {
     return giocatore.name != null && giocatore.name.isNotEmpty;
   }
+
+  bool allPlayersAreSetted() {
+    for (TextEditingController t in controllerList)
+      if (t == null || t.text == null || t.text.isEmpty) return false;
+    return true;
+  }
+}
+
+class ContaPuntiGiocatori extends StatefulWidget {
+  List<Giocatore> giocatori;
+
+  ContaPuntiGiocatori(this.giocatori);
+
+  @override
+  State<StatefulWidget> createState() {
+    return new ContaPuntiGiocatoriState(giocatori);
+  }
+}
+
+class ContaPuntiGiocatoriState extends State<ContaPuntiGiocatori> {
+  List<Giocatore> giocatori;
+
+  ContaPuntiGiocatoriState(this.giocatori);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Conta punti')),
+      body: Text(getValue(giocatori)),
+    );
+  }
+}
+
+String getValue(List<Giocatore> giocatori) {
+  String g = "";
+  for (Giocatore gi in giocatori) {
+    g += gi.name + " ";
+  }
+  return g;
 }
