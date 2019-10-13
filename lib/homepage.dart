@@ -111,10 +111,12 @@ class SelezionaGiocatori extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Seleziona giocatori'),
-        ),
-        body: Center(child: SelezionaGiocatoriBody(gioco)));
+      appBar: AppBar(
+        title: Text('Seleziona giocatori'),
+      ),
+      body: Center(child: SelezionaGiocatoriBody(gioco)),
+        resizeToAvoidBottomInset : false, /*adjiustPan*/
+    );
   }
 }
 
@@ -130,7 +132,7 @@ class SelezionaGiocatoriBody extends StatefulWidget {
 }
 
 class SelezionaGiocatoriState extends State<SelezionaGiocatoriBody> {
-  List<Giocatore> _giocatori = new List();
+  List<Giocatore> _giocatori;
   String gioco;
 
   SelezionaGiocatoriState(this.gioco);
@@ -139,55 +141,57 @@ class SelezionaGiocatoriState extends State<SelezionaGiocatoriBody> {
   Widget build(BuildContext context) {
     switch (gioco) {
       case SCOPONE_SCIENTIFICO:
+        _giocatori = new List(4);
         return giocatoriScopone(_giocatori);
       case PRESIDENTE:
       case ASSE:
+        _giocatori = new List();
         return giocatoriPresidente();
     }
   }
 
   Widget giocatoriScopone(List<Giocatore> giocatori) {
     return Center(
-      child: Column(
-        children: <Widget>[
-          Flexible(
-              flex: 10,
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: teamElement(giocatori, 0, 1),
-              )),
-          Flexible(
-              flex: 2,
-              child: Align(
-                alignment: Alignment.center,
-                child: Image.asset('assets/image/vs.png'),
-              )),
-          Flexible(
-              flex: 10,
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: teamElement(giocatori, 2, 3),
-              ))
-        ],
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Flexible(
+                flex: 10,
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: teamElement(giocatori, 0, 1),
+                )),
+            Flexible(
+                flex: 2,
+                child: Align(
+                  alignment: Alignment.center,
+                  child: Image.asset('assets/image/vs.png'),
+                )),
+            Flexible(
+                flex: 10,
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: teamElement(giocatori, 2, 3),
+                ))
+          ],
+        ),
       ),
     );
   }
 
   Widget teamElement(
       List<Giocatore> giocatori, int giocatore1, int giocatore2) {
-    List<Giocatore> subListGiocatori = new List();
-    if (giocatori.isEmpty) {
-      subListGiocatori.insert(giocatore1, new Giocatore.newGiocatore(""));
-      subListGiocatori.insert(giocatore2, new Giocatore.newGiocatore(""));
-    } else {
-      subListGiocatori = giocatori.getRange(giocatore1, giocatore2);
-    }
+    if (giocatori[giocatore1] == null)
+      giocatori[giocatore1] = new Giocatore.newGiocatore("");
+    if (giocatori[giocatore2] == null)
+      giocatori[giocatore2] = new Giocatore.newGiocatore("");
     return Card(
       elevation: 2.0,
       child: Column(
         children: <Widget>[
-          Flexible(child: teamCard(subListGiocatori[giocatore1], giocatore1)),
-          Flexible(child: teamCard(subListGiocatori[giocatore2], giocatore2))
+          Flexible(child: teamCard(giocatori[giocatore1], giocatore1)),
+          Flexible(child: teamCard(giocatori[giocatore2], giocatore2))
         ],
       ),
     );
@@ -243,8 +247,8 @@ class SelezionaGiocatoriState extends State<SelezionaGiocatoriBody> {
           child: Padding(
               padding: EdgeInsets.only(left: 8.0),
               child: Container(
-                width: 100,
-                height: 100,
+                width: 80,
+                height: 80,
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     image: DecorationImage(
@@ -282,8 +286,9 @@ class SelezionaGiocatoriState extends State<SelezionaGiocatoriBody> {
                     labelText: "Aggiungi o crea un nuovo giocatore"),
                 onEditingComplete: () {
                   setState(() {
-                    _giocatori.add(
-                        new Giocatore.newGiocatore(giocatoreController.text));
+                    if (giocatoreController.text != null)
+                      _giocatori.add(
+                          new Giocatore.newGiocatore(giocatoreController.text));
                   });
                 },
               ),
