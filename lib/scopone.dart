@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_app/Model/Constants.dart';
 import 'package:flutter_app/Model/Giocatore.dart';
 
 import 'contapunti.dart';
@@ -28,7 +29,8 @@ class ScoponeState extends State<Scopone> {
   List<FocusNode> focusNodeList;
   BuildContext context;
 
-  ScoponeState(this.giocatori, this.controllerList, this.focusNodeList, this.context);
+  ScoponeState(
+      this.giocatori, this.controllerList, this.focusNodeList, this.context);
 
   @override
   Widget build(BuildContext context) {
@@ -70,14 +72,11 @@ class ScoponeState extends State<Scopone> {
               flex: 2,
               child: RaisedButton(
                 child: Text("Gioca"),
-                onPressed: !allPlayersAreSetted()
-                    ? null
-                    : () {
-                        Navigator.push(
-                            context,
+                onPressed: !allPlayersAreSetted() ? null : () {
+                        Navigator.push(context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    ContaPuntiGiocatori(giocatori)));
+                                builder: (context) => ContaPuntiGiocatori(
+                                    giocatori, SCOPONE_SCIENTIFICO)));
                       },
               ),
             )
@@ -99,7 +98,6 @@ class ScoponeState extends State<Scopone> {
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           teamCard(giocatori[giocatore1], giocatore1),
-          //TODO AGGIUNGERE FLEX
           teamCard(giocatori[giocatore2], giocatore2)
         ],
       ),

@@ -1,11 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_app/Model/Constants.dart';
 
-import 'Model/Giocatore.dart';
 import 'aggiungigiocatori.dart';
-import 'contapunti.dart';
 
 main() => runApp(ContaPunti());
 
@@ -105,8 +102,3 @@ class SelezionaGioco extends StatelessWidget {
         MaterialPageRoute(builder: (context) => SelezionaGiocatori(gioco)));
   }
 }
-
-
-
-
-

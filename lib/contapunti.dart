@@ -4,23 +4,27 @@ import 'package:flutter_app/Model/Giocatore.dart';
 class ContaPuntiGiocatori extends StatefulWidget {
   List<Giocatore> giocatori;
 
-  ContaPuntiGiocatori(this.giocatori);
+  String gioco;
+
+  ContaPuntiGiocatori(this.giocatori, this.gioco);
 
   @override
   State<StatefulWidget> createState() {
-    return new ContaPuntiGiocatoriState(giocatori);
+    return new ContaPuntiGiocatoriState(giocatori,gioco);
   }
 }
 
 class ContaPuntiGiocatoriState extends State<ContaPuntiGiocatori> {
   List<Giocatore> giocatori;
 
-  ContaPuntiGiocatoriState(this.giocatori);
+  String gioco;
+
+  ContaPuntiGiocatoriState(this.giocatori, this.gioco);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Conta punti')),
+      appBar: AppBar(title: Text(gioco)),
       body: Text(getValue(giocatori)),
     );
   }
