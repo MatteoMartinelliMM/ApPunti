@@ -22,6 +22,13 @@ class ContaPuntiGiocatoriState extends State<ContaPuntiGiocatori> {
   String gioco;
 
   ContaPuntiGiocatoriState(this.giocatori, this.gioco);
+  TextEditingController etC = new TextEditingController();
+
+
+  @override
+  void initState() {
+    etC.text = "0";
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +67,41 @@ class ContaPuntiGiocatoriState extends State<ContaPuntiGiocatori> {
                             shape: BoxShape.circle,
                           ),
                         ),
-                      )
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          height: 40,
+                          width: 40,
+                          child: TextField(
+                            controller: etC,
+                            keyboardType: TextInputType.number,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                            decoration: InputDecoration(
+                              border: InputBorder.none
+                            )
+                          ),
+                        ),
+                      ),GestureDetector(
+                        onTap: null,
+                        child: Container(
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              "+",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            border: Border.all(),
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      ),
                     ],
                   )
                 ],
