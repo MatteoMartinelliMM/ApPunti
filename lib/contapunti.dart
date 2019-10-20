@@ -3,6 +3,8 @@ import 'package:flutter_app/Components/avatarstack.dart';
 import 'package:flutter_app/Model/Constants.dart';
 import 'package:flutter_app/Model/Giocatore.dart';
 
+import 'Components/CounterLayout.dart';
+
 class ContaPuntiGiocatori extends StatefulWidget {
   List<Giocatore> giocatori;
 
@@ -20,14 +22,16 @@ class ContaPuntiGiocatoriState extends State<ContaPuntiGiocatori> {
   List<Giocatore> giocatori;
 
   String gioco;
+  int count1;
 
   ContaPuntiGiocatoriState(this.giocatori, this.gioco);
-  TextEditingController etC = new TextEditingController();
 
+  TextEditingController etC = new TextEditingController();
 
   @override
   void initState() {
-    etC.text = "0";
+    count1 = 0;
+    etC.text = count1.toString();
   }
 
   @override
@@ -49,68 +53,47 @@ class ContaPuntiGiocatoriState extends State<ContaPuntiGiocatori> {
                         padding: const EdgeInsets.all(8.0),
                         child: stackavatar(getImageName(), 80.0, 80.0),
                       ),
-                      GestureDetector(
-                        onTap: null,
-                        child: Container(
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Text(
-                              "-",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            border: Border.all(),
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                      ),
+                      Spacer(),
                       Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          height: 40,
-                          width: 40,
-                          child: TextField(
-                            controller: etC,
-                            keyboardType: TextInputType.number,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-                            decoration: InputDecoration(
-                              border: InputBorder.none
-                            )
-                          ),
-                        ),
-                      ),GestureDetector(
-                        onTap: null,
-                        child: Container(
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Text(
-                              "+",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            border: Border.all(),
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                      ),
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: CounterLayout.defaultLayout(etC, () {
+                          decrementCounter();
+                        }, () {
+                          incrementCounter();
+                        }, () {
+                          onTextChange();
+                        }),
+                      )
                     ],
-                  )
+                  ),
                 ],
               ),
             ),
+            Image.asset(name)
           ],
         ),
       ),
     );
+  }
+
+  void incrementCounter() {
+    setState(() {
+      count1++;
+      etC.text = count1.toString();
+    });
+  }
+
+  void decrementCounter() {
+    setState(() {
+      if (count1 > 0) {
+        count1--;
+        etC.text = count1.toString();
+      }
+    });
+  }
+
+  void onTextChange() {
+    count1 = int.parse(etC.text);
   }
 
   List<String> getImageName() {
