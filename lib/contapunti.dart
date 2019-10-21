@@ -23,77 +23,190 @@ class ContaPuntiGiocatoriState extends State<ContaPuntiGiocatori> {
 
   String gioco;
   int count1;
+  int count2;
+  bool p11, p21;
 
   ContaPuntiGiocatoriState(this.giocatori, this.gioco);
 
-  TextEditingController etC = new TextEditingController();
+  TextEditingController etC1 = new TextEditingController();
+  TextEditingController etC2 = new TextEditingController();
 
   @override
   void initState() {
     count1 = 0;
-    etC.text = count1.toString();
+    etC1.text = count1.toString();
+    count2 = 0;
+    etC2.text = count2.toString();
+    p11 = false;
+    p21 = true;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(gioco)),
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Card(
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                children: <Widget>[
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
+      body: Column(
+        children: <Widget>[
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Align(
+                alignment: Alignment.topCenter,
+                child: Container(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: stackavatar(getImageName(), 80.0, 80.0),
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Align(
+                          alignment: Alignment.topCenter,
+                          child: Text("Punti vittoria",
+                              style: TextStyle(fontSize: 25),
+                              textAlign: TextAlign.center),
+                        ),
                       ),
-                      Spacer(),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: CounterLayout.defaultLayout(etC, () {
-                          decrementCounter();
-                        }, () {
-                          incrementCounter();
-                        }, () {
-                          onTextChange();
-                        }),
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Checkbox(
+                            value: p11,
+                            onChanged: (bool value) {
+                              setState(() {
+                                p11 = value;
+                                p21 = !value;
+                              });
+                            },
+                          ),
+                          Text("11 punti")
+                        ],
+                      ),
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Checkbox(
+                            value: p21,
+                            onChanged: (bool value) {
+                              setState(() {
+                                p21 = value;
+                                p11 = !value;
+                              });
+                            },
+                          ),
+                          Text("21 punti")
+                        ],
                       )
                     ],
                   ),
-                ],
+                ),
               ),
-            ),
-            Image.asset(name)
-          ],
-        ),
+              Padding(
+                padding: const EdgeInsets.only(top: 24.0),
+                child: Align(
+                  alignment: Alignment.center,
+                  child: Card(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        Row(
+                          mainAxisSize: MainAxisSize.max,
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: stackavatar(getImageName(), 80.0, 80.0),
+                            ),
+                            Spacer(),
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: CounterLayout.defaultLayout(etC1, () {
+                                decrementCounterTeam1();
+                              }, () {
+                                incrementCounterTeam1();
+                              }, () {
+                                onTextChangeTeam1();
+                              }),
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Image.asset('assets/image/vs_small.png'),
+              Card(
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: <Widget>[
+                    Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: stackavatar(getImageName(), 80.0, 80.0),
+                        ),
+                        Spacer(),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: CounterLayout.defaultLayout(etC2, () {
+                            decrementCounterTeam2();
+                          }, () {
+                            incrementCounterTeam2();
+                          }, () {
+                            onTextChangeTeam2();
+                          }),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
+        ],
       ),
     );
   }
 
-  void incrementCounter() {
+  void incrementCounterTeam1() {
     setState(() {
       count1++;
-      etC.text = count1.toString();
+      etC1.text = count1.toString();
     });
   }
 
-  void decrementCounter() {
+  void decrementCounterTeam1() {
     setState(() {
       if (count1 > 0) {
         count1--;
-        etC.text = count1.toString();
+        etC1.text = count1.toString();
       }
     });
   }
 
-  void onTextChange() {
-    count1 = int.parse(etC.text);
+  void onTextChangeTeam1() {
+    count1 = int.parse(etC1.text);
+  }
+
+  void incrementCounterTeam2() {
+    setState(() {
+      count2++;
+      etC2.text = count2.toString();
+    });
+  }
+
+  void decrementCounterTeam2() {
+    setState(() {
+      if (count2 > 0) {
+        count1--;
+        etC2.text = count2.toString();
+      }
+    });
+  }
+
+  void onTextChangeTeam2() {
+    count2 = int.parse(etC2.text);
   }
 
   List<String> getImageName() {
