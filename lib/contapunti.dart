@@ -45,6 +45,12 @@ class ContaPuntiGiocatoriState extends State<ContaPuntiGiocatori> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(gioco)),
+      floatingActionButton: Visibility(
+          visible: true, //TODO REPLACE WITH LOGIC
+          child: FloatingActionButton(
+            onPressed: null,
+            child: Icon(Icons.save),
+          )),
       body: Column(
         children: <Widget>[
           Column(
@@ -103,34 +109,51 @@ class ContaPuntiGiocatoriState extends State<ContaPuntiGiocatori> {
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 24.0),
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Card(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      children: <Widget>[
-                        Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: stackavatar(getImageName(), 80.0, 80.0),
+                child: Card(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: stackavatar(getImageName(), 80.0, 80.0),
+                          ),
+                          Spacer(),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: CounterLayout.defaultLayout(etC1, () {
+                              decrementCounterTeam1();
+                            }, () {
+                              incrementCounterTeam1();
+                            }, () {
+                              onTextChangeTeam1();
+                            }),
+                          )
+                        ],
+                      ),
+                      Row(
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                top: 8.0, left: 15, bottom: 8.0),
+                            child: Text(
+                              giocatori[0].name,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: 18),
                             ),
-                            Spacer(),
-                            Padding(
-                              padding: const EdgeInsets.only(right: 8.0),
-                              child: CounterLayout.defaultLayout(etC1, () {
-                                decrementCounterTeam1();
-                              }, () {
-                                incrementCounterTeam1();
-                              }, () {
-                                onTextChangeTeam1();
-                              }),
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                top: 8.0, left: 15, bottom: 8.0),
+                            child: Text(giocatori[1].name,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 18)),
+                          ),
+                        ],
+                      )
+                    ],
                   ),
                 ),
               ),
@@ -159,6 +182,26 @@ class ContaPuntiGiocatoriState extends State<ContaPuntiGiocatori> {
                         )
                       ],
                     ),
+                    Row(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              top: 8.0, left: 15, bottom: 8.0),
+                          child: Text(
+                            giocatori[2].name,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              top: 8.0, left: 15, bottom: 8.0),
+                          child: Text(giocatori[3].name,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: 18)),
+                        ),
+                      ],
+                    )
                   ],
                 ),
               )
@@ -199,7 +242,7 @@ class ContaPuntiGiocatoriState extends State<ContaPuntiGiocatori> {
   void decrementCounterTeam2() {
     setState(() {
       if (count2 > 0) {
-        count1--;
+        count2--;
         etC2.text = count2.toString();
       }
     });
