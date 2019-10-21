@@ -9,6 +9,7 @@ class ContaPuntiGiocatori extends StatefulWidget {
   List<Giocatore> giocatori;
 
   String gioco;
+  BaseContaPunti contaPunti;
 
   ContaPuntiGiocatori(this.giocatori, this.gioco);
 
@@ -20,11 +21,9 @@ class ContaPuntiGiocatori extends StatefulWidget {
 
 class ContaPuntiGiocatoriState extends State<ContaPuntiGiocatori> {
   List<Giocatore> giocatori;
-  BaseContaPunti contaPunti;
   String gioco;
-  int count1;
-  int count2;
-  bool p11, p21;
+
+  Widget w;
 
   ContaPuntiGiocatoriState(this.giocatori, this.gioco);
 
@@ -33,11 +32,8 @@ class ContaPuntiGiocatoriState extends State<ContaPuntiGiocatori> {
 
   @override
   void initState() {
-    switch (gioco) {
-      case SCOPONE_SCIENTIFICO:
-        contaPunti = new ScoponeContaPunti(giocatori);
-        break;
-    }
+    w = getContaPuntiLayout(gioco);
+    widget.contaPunti = (w) as BaseContaPunti;
   }
 
   @override
@@ -45,14 +41,27 @@ class ContaPuntiGiocatoriState extends State<ContaPuntiGiocatori> {
     return Scaffold(
       appBar: AppBar(title: Text(gioco)),
       floatingActionButton: Visibility(
-          visible: contaPunti.calcolaVittoria(),
+          visible: widget.contaPunti.calcolaVittoria(),
           child: FloatingActionButton(
             onPressed: () {
-              initState();
+              setState(() {
+                initState();
+              });
             },
             child: Icon(Icons.save),
           )),
-      body: contaPunti,
+      body: w,
     );
+  }
+
+  Widget getContaPuntiLayout(String gioco) {
+    switch (gioco) {
+      case SCOPONE_SCIENTIFICO:
+        return new ScoponeContaPunti(giocatori, callback);
+    }
+  }
+
+  void callback() {
+    setState(() {});
   }
 }
