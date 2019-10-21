@@ -44,6 +44,12 @@ class ContaPuntiGiocatoriState extends State<ContaPuntiGiocatori> {
           visible: widget.contaPunti.calcolaVittoria(),
           child: FloatingActionButton(
             onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return rigiocaDialog();
+                },
+              );
               setState(() {
                 initState();
               });
@@ -63,5 +69,28 @@ class ContaPuntiGiocatoriState extends State<ContaPuntiGiocatori> {
 
   void callback() {
     setState(() {});
+  }
+
+  Widget rigiocaDialog() {
+    return AlertDialog(
+      title: new Text("Vuoi giocare un'altra partita?"),
+      actions: <Widget>[
+        FlatButton(
+            onPressed: () {
+              Navigator.popUntil(context, ModalRoute.withName('/'));
+            },
+            child: Text("No")),
+        FlatButton(
+          onPressed: () {
+            setState(() {
+              //TODO aggiorare dati db e firebase
+              Navigator.of(context).pop();
+              initState();
+            });
+          },
+          child: Text("Si!"),
+        )
+      ],
+    );
   }
 }
