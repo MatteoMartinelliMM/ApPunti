@@ -7,62 +7,69 @@ import 'Model/Giocatore.dart';
 class AggiungiGiocatoriBriscolaAChiamata extends StatefulWidget {
   List<Giocatore> giocatoriGiocanti;
   List<Giocatore> giocatoriFromBe;
-  GlobalKey<AutoCompleteTextFieldState<Giocatore>> key;
 
   @override
   State<StatefulWidget> createState() {
+    giocatoriGiocanti = new List();
     return new AggiungiGiocatoriBriscolaAChiamataState();
   }
 }
 
 class AggiungiGiocatoriBriscolaAChiamataState
     extends State<AggiungiGiocatoriBriscolaAChiamata> {
+  GlobalKey<AutoCompleteTextFieldState<Giocatore>> key;
+
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Align(
-            alignment: Alignment.topCenter,
-            child: AutoCompleteTextField<Giocatore>(
-              key: widget.key,
-              suggestions: widget.giocatoriFromBe,
-              itemBuilder: (context, item) {
-                return ListTile(
-                  leading: Container(
-                    height: 35,
-                    width: 35,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                            fit: BoxFit.fill,
-                            image: AssetImage(IMAGE_PATH + 'defuser.png'))),
+        Column(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: AutoCompleteTextField<Giocatore>(
+                  key: key,
+                  suggestions: widget.giocatoriFromBe,
+                  itemBuilder: (context, item) {
+                    return ListTile(
+                      leading: Container(
+                        height: 50,
+                        width: 50,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                                fit: BoxFit.fill,
+                                image: AssetImage(IMAGE_PATH + 'defuser.png'))),
+                      ),
+                      title: Text(item.name),
+                    );
+                  },
+                  itemFilter: (item, query) {
+                    return item.name.startsWith(query);
+                  },
+                  itemSorter: (g1, g2) {
+                    return g1.name.compareTo(g2.name);
+                  },
+                  itemSubmitted: (g) {
+                    setState(() {
+                      widget.giocatoriGiocanti.add(g);
+                    });
+                  },
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.fromLTRB(10.0, 30.0, 10.0, 20.0),
+                    border: OutlineInputBorder(),
+                    labelText: "Aggiungi o crea un nuovo giocatore",
                   ),
-                  title: Text(item.name),
-                );
-              },
-              itemFilter: (item, query) {
-                return item.name.startsWith(query);
-              },
-              itemSorter: (g1, g2) {
-                return g1.name.compareTo(g2.name);
-              },
-              itemSubmitted: (g) {
-                setState(() {
-                  widget.giocatoriGiocanti.add(g);
-                });
-              },
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: "Aggiungi o crea un nuovo giocatore",
+                ),
               ),
             ),
-          ),
+          ],
         ),
-        Visibility(
-          visible: widget.giocatoriGiocanti.isNotEmpty,
+       /* Visibility(
+          visible: false,
           child: ListView.separated(
               itemBuilder: (context, index) {
                 return ListTile(
@@ -84,8 +91,8 @@ class AggiungiGiocatoriBriscolaAChiamataState
                 new Divider();
               },
               itemCount: widget.giocatoriGiocanti.length),
-        ),
-        Visibility(
+        ),*/
+        /*Visibility(
           visible: widget.giocatoriGiocanti.isEmpty,
           child: Center(
             child: Text(
@@ -94,15 +101,14 @@ class AggiungiGiocatoriBriscolaAChiamataState
               textAlign: TextAlign.center,
             ),
           ),
-        )
+        )*/
       ],
     );
   }
 
   @override
   void initState() {
-    widget.key = new GlobalKey();
-    widget.giocatoriGiocanti = new List();
+    key = new GlobalKey();
     widget.giocatoriFromBe = new List();
     widget.giocatoriFromBe.add(new Giocatore.newGiocatore("Teo"));
     widget.giocatoriFromBe.add(new Giocatore.newGiocatore("Tua mamma"));
