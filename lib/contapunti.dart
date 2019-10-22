@@ -41,7 +41,7 @@ class ContaPuntiGiocatoriState extends State<ContaPuntiGiocatori> {
     return Scaffold(
       appBar: AppBar(title: Text(gioco)),
       floatingActionButton: Visibility(
-          visible: widget.contaPunti.calcolaVittoria(),
+          visible: isVittoria(),
           child: FloatingActionButton(
             onPressed: () {
               showDialog(
@@ -59,6 +59,13 @@ class ContaPuntiGiocatoriState extends State<ContaPuntiGiocatori> {
       body: w,
     );
   }
+
+  bool isVittoria() {
+    if (widget != null && widget.contaPunti != null)
+      return widget.contaPunti.calcolaVittoria();
+    return false;
+  }
+
 
   Widget getContaPuntiLayout(String gioco) {
     switch (gioco) {

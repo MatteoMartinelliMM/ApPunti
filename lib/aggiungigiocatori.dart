@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_app/Model/Constants.dart';
 import 'package:flutter_app/scopone.dart';
 
+import 'AggiungiGiocatoriBriscolaAChiamata.dart';
 import 'Model/Giocatore.dart';
 
 class SelezionaGiocatori extends StatelessWidget {
@@ -65,6 +66,8 @@ class SelezionaGiocatoriState extends State<SelezionaGiocatoriBody> {
     switch (gioco) {
       case SCOPONE_SCIENTIFICO:
         return Scopone(giocatori, controllerList, focusNodeList, context);
+      case BRISCOLA_A_CHIAMATA:
+        return AggiungiGiocatoriBriscolaAChiamata();
       case PRESIDENTE:
       case ASSE:
         return giocatoriPresidente();

@@ -29,7 +29,8 @@ class CounterLayout extends StatelessWidget {
             width: 60,
             child: TextField(
                 controller: etC,
-                onChanged: (value) {
+                textInputAction: TextInputAction.done,
+                onSubmitted: (value) {
                   onTextChange();
                 },
                 keyboardType: TextInputType.number,
