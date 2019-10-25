@@ -1,27 +1,52 @@
-import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:flutter/material.dart';
 
+import 'BaseAggiungiGiocatori.dart';
+import 'Components/AutoCompleteText.dart';
 import 'Model/Constants.dart';
 import 'Model/Giocatore.dart';
 
-class AggiungiGiocatoriBriscolaAChiamata extends StatefulWidget {
+typedef OnSubmitted = void Function(Giocatore g);
+
+class AggiungiGiocatoriBriscolaAChiamata extends StatefulWidget
+    implements BaseAggiungiGiocatori {
   List<Giocatore> giocatoriGiocanti;
-  List<Giocatore> giocatoriFromBe;
+
+  VoidCallback toggleFab;
+
+  AggiungiGiocatoriBriscolaAChiamata(this.toggleFab);
 
   @override
   State<StatefulWidget> createState() {
     giocatoriGiocanti = new List();
     return new AggiungiGiocatoriBriscolaAChiamataState();
   }
+
+  @override
+  bool canGoNext() {
+    return giocatoriGiocanti != null && giocatoriGiocanti.length == 5;
+  }
+
+  @override
+  List<Giocatore> onFabClick() {
+    return giocatoriGiocanti;
+  }
 }
 
 class AggiungiGiocatoriBriscolaAChiamataState
     extends State<AggiungiGiocatoriBriscolaAChiamata> {
-  GlobalKey<AutoCompleteTextFieldState<Giocatore>> key;
+  ObjectKey key;
+  int state;
+
+  OnSubmitted onSubmitted;
 
   @override
   Widget build(BuildContext context) {
+    widget.giocatoriGiocanti = key.value;
+    bool isEnable = widget.giocatoriGiocanti.length < 5;
+    onSubmitted = onDiocane;
+    AutoCompleteText autoCompleteText = AutoCompleteText(onSubmitted, isEnable);
     return Column(
+      key: key,
       mainAxisSize: MainAxisSize.max,
       children: <Widget>[
         Column(
@@ -30,70 +55,88 @@ class AggiungiGiocatoriBriscolaAChiamataState
               padding: const EdgeInsets.all(8.0),
               child: Align(
                 alignment: Alignment.topCenter,
-                child: AutoCompleteTextField<Giocatore>(
-                  key: key,
-                  suggestions: widget.giocatoriFromBe,
-                  itemBuilder: (context, item) {
-                    return ListTile(
+                child: autoCompleteText,
+              ),
+            ),
+          ],
+        ),
+        Visibility(
+          visible: widget?.giocatoriGiocanti?.isNotEmpty ?? false,
+          child: Expanded(
+            child: ListView.separated(
+                itemBuilder: (context, index) {
+                  return Dismissible(
+                    key: ObjectKey(widget.giocatoriGiocanti[index]),
+                    background: Container(
+                      color: Colors.red,
+                      child: Row(
+                        children: <Widget>[
+                          Icon(Icons.delete, color: Colors.white),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Center(
+                                child: Text(
+                              "Rimuovi Giocatore",
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.white,
+                                  fontStyle: FontStyle.italic),
+                            )),
+                          ),
+                        ],
+                      ),
+                    ),
+                    secondaryBackground: Container(
+                      color: Colors.red,
+                      child: Row(
+                        children: <Widget>[
+                          Spacer(),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: Center(
+                                child: Text(
+                              "Rimuovi Giocatore",
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.white,
+                                  fontStyle: FontStyle.italic),
+                            )),
+                          ),
+                          Icon(Icons.delete, color: Colors.white)
+                        ],
+                      ),
+                    ),
+                    onDismissed: (dismissDirection) {
+                      setState(() {
+                        autoCompleteText.updateGiocatore(
+                            widget.giocatoriGiocanti.removeAt(index), false);
+                        widget.toggleFab();
+                      });
+                    },
+                    child: ListTile(
                       leading: Container(
-                        height: 50,
-                        width: 50,
+                        width: 60,
+                        height: 60,
                         decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             image: DecorationImage(
                                 fit: BoxFit.fill,
                                 image: AssetImage(IMAGE_PATH + 'defuser.png'))),
                       ),
-                      title: Text(item.name),
-                    );
-                  },
-                  itemFilter: (item, query) {
-                    return item.name.startsWith(query);
-                  },
-                  itemSorter: (g1, g2) {
-                    return g1.name.compareTo(g2.name);
-                  },
-                  itemSubmitted: (g) {
-                    setState(() {
-                      widget.giocatoriGiocanti.add(g);
-                    });
-                  },
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.fromLTRB(10.0, 30.0, 10.0, 20.0),
-                    border: OutlineInputBorder(),
-                    labelText: "Aggiungi o crea un nuovo giocatore",
-                  ),
-                ),
-              ),
-            ),
-          ],
+                      title: Text(widget.giocatoriGiocanti[index].name),
+                      subtitle: Text(
+                          widget.giocatoriGiocanti[index].points.toString()),
+                    ),
+                  );
+                },
+                separatorBuilder: (context, itemCount) {
+                  return Divider();
+                },
+                itemCount: widget?.giocatoriGiocanti?.length ?? 0),
+          ),
         ),
-       /* Visibility(
-          visible: false,
-          child: ListView.separated(
-              itemBuilder: (context, index) {
-                return ListTile(
-                  leading: Container(
-                    width: 36,
-                    height: 36,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                            fit: BoxFit.fill,
-                            image: AssetImage(IMAGE_PATH + 'defuser.png'))),
-                  ),
-                  title: Text(widget.giocatoriGiocanti[index].name),
-                  subtitle:
-                      Text(widget.giocatoriGiocanti[index].points.toString()),
-                );
-              },
-              separatorBuilder: (context, index) {
-                new Divider();
-              },
-              itemCount: widget.giocatoriGiocanti.length),
-        ),*/
-        /*Visibility(
-          visible: widget.giocatoriGiocanti.isEmpty,
+        Visibility(
+          visible: widget?.giocatoriGiocanti?.isEmpty ?? true,
           child: Center(
             child: Text(
               "Cerca giocatori o\n aggiungine uno nuovo",
@@ -101,26 +144,22 @@ class AggiungiGiocatoriBriscolaAChiamataState
               textAlign: TextAlign.center,
             ),
           ),
-        )*/
+        )
       ],
     );
   }
 
+  onDiocane(Giocatore g) {
+    setState(() {
+      widget.giocatoriGiocanti.add(g);
+      key = new ObjectKey(widget.giocatoriGiocanti);
+      if (widget.canGoNext()) widget.toggleFab;
+    });
+  }
+
   @override
   void initState() {
-    key = new GlobalKey();
-    widget.giocatoriFromBe = new List();
-    widget.giocatoriFromBe.add(new Giocatore.newGiocatore("Teo"));
-    widget.giocatoriFromBe.add(new Giocatore.newGiocatore("Tua mamma"));
-    widget.giocatoriFromBe.add(new Giocatore.newGiocatore("Tuo padre"));
-    widget.giocatoriFromBe.add(new Giocatore.newGiocatore("Scarse"));
-    widget.giocatoriFromBe.add(new Giocatore.newGiocatore("Gio"));
-    widget.giocatoriFromBe.add(new Giocatore.newGiocatore("Lore"));
-    widget.giocatoriFromBe.add(new Giocatore.newGiocatore("Vale"));
-    widget.giocatoriFromBe.add(new Giocatore.newGiocatore("Michi"));
-    widget.giocatoriFromBe.add(new Giocatore.newGiocatore("Ale"));
-    widget.giocatoriFromBe.add(new Giocatore.newGiocatore("Ally"));
-    widget.giocatoriFromBe.add(new Giocatore.newGiocatore("Marco"));
-    widget.giocatoriFromBe.add(new Giocatore.newGiocatore("Dennis"));
+    widget.giocatoriGiocanti = new List();
+    key = new ObjectKey(widget.giocatoriGiocanti);
   }
 }

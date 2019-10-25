@@ -1,32 +1,23 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_app/Model/Constants.dart';
 import 'package:flutter_app/scopone.dart';
 
 import 'AggiungiGiocatoriBriscolaAChiamata.dart';
+import 'AggiungiGiocatoriPresidente.dart';
+import 'BaseAggiungiGiocatori.dart';
 import 'Model/Giocatore.dart';
+import 'contapunti.dart';
 
-class SelezionaGiocatori extends StatelessWidget {
+class SelezionaGiocatori extends StatefulWidget {
   String gioco;
 
   SelezionaGiocatori(this.gioco);
 
+  BaseAggiungiGiocatori baseAggiungiGiocatori;
+
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Seleziona giocatori'),
-      ),
-      body: SelezionaGiocatoriBody(gioco),
-    );
-  }
-}
-
-class SelezionaGiocatoriBody extends StatefulWidget {
-  String gioco;
-
-  SelezionaGiocatoriBody(this.gioco);
+  Widget build(BuildContext context) {}
 
   @override
   State<StatefulWidget> createState() {
@@ -34,11 +25,13 @@ class SelezionaGiocatoriBody extends StatefulWidget {
   }
 }
 
-class SelezionaGiocatoriState extends State<SelezionaGiocatoriBody> {
+class SelezionaGiocatoriState extends State<SelezionaGiocatori> {
   List<Giocatore> giocatori;
   List<FocusNode> focusNodeList;
   List<TextEditingController> controllerList;
   String gioco;
+  Widget aggiungiGiocatoriBody;
+  ObjectKey key;
 
   SelezionaGiocatoriState(this.gioco);
 
@@ -53,72 +46,53 @@ class SelezionaGiocatoriState extends State<SelezionaGiocatoriBody> {
           controllerList.add(new TextEditingController());
           focusNodeList.add(new FocusNode());
         }
+        aggiungiGiocatoriBody =
+            new Scopone(giocatori, controllerList, focusNodeList, context);
+        break;
+      case BRISCOLA_A_CHIAMATA:
+        aggiungiGiocatoriBody = AggiungiGiocatoriBriscolaAChiamata(() {
+          onMinimumGiocatoriReached();
+        });
         break;
       case PRESIDENTE:
       case ASSE:
         giocatori = new List();
+        aggiungiGiocatoriBody =
+            new AggiungiGiocatoriPresidente(giocatori, gioco, () {
+          onMinimumGiocatoriReached();
+        });
         break;
     }
+    widget.baseAggiungiGiocatori =
+        aggiungiGiocatoriBody as BaseAggiungiGiocatori;
+    key = new ObjectKey(widget.baseAggiungiGiocatori);
   }
 
   @override
   Widget build(BuildContext context) {
-    switch (gioco) {
-      case SCOPONE_SCIENTIFICO:
-        return Scopone(giocatori, controllerList, focusNodeList, context);
-      case BRISCOLA_A_CHIAMATA:
-        return AggiungiGiocatoriBriscolaAChiamata();
-      case PRESIDENTE:
-      case ASSE:
-        return giocatoriPresidente();
-    }
-  }
-
-  Column giocatoriPresidente() {
-    TextEditingController giocatoreController = new TextEditingController();
-    return Column(
-      children: <Widget>[
-        Padding(
-            padding: EdgeInsets.only(top: 8.0, left: 4.0, right: 4.0),
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: TextField(
-                textInputAction: TextInputAction.done,
-                controller: giocatoreController,
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: "Aggiungi o crea un nuovo giocatore"),
-                onEditingComplete: () {
-                  setState(() {
-                    if (giocatoreController.text != null &&
-                        giocatoreController.text.isNotEmpty)
-                      giocatori.add(
-                          new Giocatore.newGiocatore(giocatoreController.text));
-                  });
-                },
-              ),
-            )),
-        Expanded(
-            child: ListView.builder(
-                itemBuilder: (context, index) {
-                  return playerTile(context, giocatori[index]);
-                },
-                /*separatorBuilder: (context, index) {
-                  return Divider();
-                },*/
-                itemCount: giocatori.length)),
-      ],
-    );
-  }
-
-  Widget playerTile(context, giocatore) {
-    return Card(
-      child: ListTile(
-          title: Text(giocatore.name),
-          leading: CircleAvatar(
-            backgroundColor: Colors.white,
-            child: Image.asset('assets/image/defuser.png'),
+    widget.baseAggiungiGiocatori = key.value;
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Seleziona giocatori'),
+      ),
+      floatingActionButton: Visibility(
+          visible: widget.baseAggiungiGiocatori.canGoNext(),
+          child: FloatingActionButton(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ContaPuntiGiocatori(
+                          widget.baseAggiungiGiocatori.onFabClick(),
+                          widget.gioco)));
+            },
+            child: Icon(Icons.navigate_next),
           )),
+      body: aggiungiGiocatoriBody,
     );
+  }
+
+  VoidCallback onMinimumGiocatoriReached() {
+    setState(() {});
   }
 }

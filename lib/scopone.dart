@@ -3,12 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_app/Model/Constants.dart';
 import 'package:flutter_app/Model/Giocatore.dart';
 
+import 'BaseAggiungiGiocatori.dart';
 import 'contapunti.dart';
 
 List<FocusNode> focuseNodeList;
 List<TextEditingController> controllerList;
 
-class Scopone extends StatefulWidget {
+class Scopone extends StatefulWidget implements BaseAggiungiGiocatori {
   List<Giocatore> giocatori;
   List<TextEditingController> controllerList;
   List<FocusNode> focusNodeList;
@@ -20,6 +21,16 @@ class Scopone extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     return ScoponeState(giocatori, controllerList, focusNodeList, this.context);
+  }
+
+  @override
+  bool canGoNext() {
+    return false;
+  }
+
+  @override
+  List<Giocatore> onFabClick() {
+    return null;
   }
 }
 
@@ -72,8 +83,11 @@ class ScoponeState extends State<Scopone> {
               flex: 2,
               child: RaisedButton(
                 child: Text("Gioca"),
-                onPressed: !allPlayersAreSetted() ? null : () {
-                        Navigator.push(context,
+                onPressed: !allPlayersAreSetted()
+                    ? null
+                    : () {
+                        Navigator.push(
+                            context,
                             MaterialPageRoute(
                                 builder: (context) => ContaPuntiGiocatori(
                                     giocatori, SCOPONE_SCIENTIFICO)));
