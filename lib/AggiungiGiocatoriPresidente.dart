@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/BaseAggiungiGiocatori.dart';
 
 import 'BaseContaPunti.dart';
 import 'Model/Constants.dart';
 import 'Model/Giocatore.dart';
 
 class AggiungiGiocatoriPresidente extends StatefulWidget
-    implements BaseContaPunti {
+    implements BaseAggiungiGiocatori {
   List<Giocatore> giocatori;
   String gioco;
 
-  AggiungiGiocatoriPresidente(this.giocatori, this.gioco, VoidCallback toggleFab);
+  AggiungiGiocatoriPresidente(
+      this.giocatori, this.gioco, VoidCallback toggleFab);
 
   @override
   State<StatefulWidget> createState() {
@@ -17,10 +19,15 @@ class AggiungiGiocatoriPresidente extends StatefulWidget
   }
 
   @override
-  bool calcolaVittoria() {
+  bool canGoNext() {
     return gioco == PRESIDENTE
         ? giocatori?.length >= 4 ?? false
         : giocatori?.length >= 3 ?? false;
+  }
+
+  @override
+  List<Giocatore> onFabClick() {
+    return giocatori;
   }
 }
 

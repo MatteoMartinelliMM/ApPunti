@@ -3,6 +3,7 @@ import 'package:flutter_app/Model/Constants.dart';
 import 'package:flutter_app/Model/Giocatore.dart';
 
 import 'BaseContaPunti.dart';
+import 'BriscolaAChiamataContaPunti.dart';
 import 'ScoponeContaPunti.dart';
 
 class ContaPuntiGiocatori extends StatefulWidget {
@@ -24,6 +25,7 @@ class ContaPuntiGiocatoriState extends State<ContaPuntiGiocatori> {
   String gioco;
 
   Widget w;
+  ObjectKey key;
 
   ContaPuntiGiocatoriState(this.giocatori, this.gioco);
 
@@ -34,14 +36,16 @@ class ContaPuntiGiocatoriState extends State<ContaPuntiGiocatori> {
   void initState() {
     w = getContaPuntiLayout(gioco);
     widget.contaPunti = (w) as BaseContaPunti;
+    key = new ObjectKey(widget.contaPunti);
   }
 
   @override
   Widget build(BuildContext context) {
+    widget.contaPunti = key.value;
     return Scaffold(
       appBar: AppBar(title: Text(gioco)),
       floatingActionButton: Visibility(
-          visible: isVittoria(),
+          visible: widget.contaPunti.calcolaVittoria(),
           child: FloatingActionButton(
             onPressed: () {
               showDialog(
@@ -60,17 +64,12 @@ class ContaPuntiGiocatoriState extends State<ContaPuntiGiocatori> {
     );
   }
 
-  bool isVittoria() {
-    if (widget != null && widget.contaPunti != null)
-      return widget.contaPunti.calcolaVittoria();
-    return false;
-  }
-
-
   Widget getContaPuntiLayout(String gioco) {
     switch (gioco) {
       case SCOPONE_SCIENTIFICO:
         return new ScoponeContaPunti(giocatori, callback);
+      case BRISCOLA_A_CHIAMATA:
+        return new BriscolaAChiamataContaPunti(giocatori, callback);
     }
   }
 
@@ -86,7 +85,7 @@ class ContaPuntiGiocatoriState extends State<ContaPuntiGiocatori> {
             onPressed: () {
               Navigator.popUntil(context, ModalRoute.withName('/'));
             },
-            child: Text("No")),
+            child: Text('No')),
         FlatButton(
           onPressed: () {
             setState(() {

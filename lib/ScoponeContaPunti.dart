@@ -10,7 +10,6 @@ class ScoponeContaPunti extends StatefulWidget implements BaseContaPunti {
   int count1;
   int count2;
   bool p11, p21;
-  bool isToReinit;
   Function callback;
   TextEditingController etC1 = new TextEditingController();
   TextEditingController etC2 = new TextEditingController();

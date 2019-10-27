@@ -7,26 +7,40 @@ class CounterLayout extends StatelessWidget {
   String leftButtonText, rightButtonText;
   VoidCallback leftButtonMethod, rightButtonMethod, onTextChange;
   TextEditingController etC;
+  double height, width;
 
   CounterLayout(this.leftButtonText, this.rightButtonText, this.etC,
-      this.leftButtonMethod, this.rightButtonMethod, this.onTextChange);
+      this.leftButtonMethod, this.rightButtonMethod, this.onTextChange) {
+    height = 40;
+    width = 80;
+  }
 
   CounterLayout.defaultLayout(this.etC, this.leftButtonMethod,
       this.rightButtonMethod, this.onTextChange) {
     leftButtonText = "-";
     rightButtonText = "+";
+    height = 40;
+    width = 80;
+  }
+
+  CounterLayout.sizedLayout(this.etC, double height, double width,
+      this.leftButtonMethod, this.rightButtonMethod, this.onTextChange) {
+    leftButtonText = "-";
+    rightButtonText = "+";
+    this.height = height;
+    this.width = width;
   }
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: <Widget>[
-        CounterButton(leftButtonText, leftButtonMethod),
+        CounterButton.sized(leftButtonText, height, height, leftButtonMethod),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Container(
-            height: 40,
-            width: 60,
+            height: height,
+            width: width,
             child: TextField(
                 controller: etC,
                 textInputAction: TextInputAction.done,
@@ -35,7 +49,8 @@ class CounterLayout extends StatelessWidget {
                 },
                 keyboardType: TextInputType.number,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    fontSize: height - 10, fontWeight: FontWeight.bold),
                 inputFormatters: [
                   LengthLimitingTextInputFormatter(3)
                   //avoid to have char counter under edittxet
@@ -46,7 +61,7 @@ class CounterLayout extends StatelessWidget {
                 )),
           ),
         ),
-        CounterButton(rightButtonText, rightButtonMethod)
+        CounterButton.sized(rightButtonText, height, height, rightButtonMethod)
       ],
     );
   }
