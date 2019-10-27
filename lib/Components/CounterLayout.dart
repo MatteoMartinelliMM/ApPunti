@@ -23,12 +23,21 @@ class CounterLayout extends StatelessWidget {
     width = 80;
   }
 
-  CounterLayout.sizedLayout(this.etC, double height, double width,
+  CounterLayout.sizedLayout(this.etC, this.height, this.width,
       this.leftButtonMethod, this.rightButtonMethod, this.onTextChange) {
     leftButtonText = "-";
     rightButtonText = "+";
-    this.height = height;
-    this.width = width;
+  }
+
+  CounterLayout.sizedLayoutWithCustomRightButton(
+      this.etC,
+      this.rightButtonText,
+      this.height,
+      this.width,
+      this.leftButtonMethod,
+      this.rightButtonMethod,
+      this.onTextChange) {
+    leftButtonText = "-";
   }
 
   @override

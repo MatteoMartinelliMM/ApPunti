@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/BaseContaPunti.dart';
+import 'package:flutter_app/ContaPunti/BaseContaPunti.dart';
 import 'package:flutter_app/Components/CounterLayout.dart';
 import 'package:flutter_app/Model/Constants.dart';
 import 'package:flutter_app/Model/Giocatore.dart';

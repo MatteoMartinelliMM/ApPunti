@@ -1,13 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Model/Constants.dart';
-import 'package:flutter_app/scopone.dart';
+import 'package:flutter_app/AggiungiGiocatori/AggiungiGiocatoriScopone.dart';
 
 import 'AggiungiGiocatoriBriscolaAChiamata.dart';
 import 'AggiungiGiocatoriPresidente.dart';
 import 'BaseAggiungiGiocatori.dart';
-import 'Model/Giocatore.dart';
-import 'contapunti.dart';
+import '../Model/Giocatore.dart';
+import '../ContaPunti/contapunti.dart';
 
 class SelezionaGiocatori extends StatefulWidget {
   String gioco;

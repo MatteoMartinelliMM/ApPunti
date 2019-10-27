@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/ContaPunti/PresidenteContaPunti.dart';
 import 'package:flutter_app/Model/Constants.dart';
 import 'package:flutter_app/Model/Giocatore.dart';
 
@@ -70,6 +71,9 @@ class ContaPuntiGiocatoriState extends State<ContaPuntiGiocatori> {
         return new ScoponeContaPunti(giocatori, callback);
       case BRISCOLA_A_CHIAMATA:
         return new BriscolaAChiamataContaPunti(giocatori, callback);
+      case PRESIDENTE:
+      case ASSE:
+        return new PresidenteContaPunti(giocatori, gioco);
     }
   }
 

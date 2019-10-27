@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/Model/Constants.dart';
 import 'package:flutter_app/Model/Giocatore.dart';
 
-import '../AggiungiGiocatoriBriscolaAChiamata.dart';
+import '../AggiungiGiocatori/AggiungiGiocatoriBriscolaAChiamata.dart';
 
 class AutoCompleteText extends StatefulWidget implements UpdateSelectedList {
   OnSubmitted onSubmitted;

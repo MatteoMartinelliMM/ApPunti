@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Model/Constants.dart';
 
-import 'aggiungigiocatori.dart';
+import 'AggiungiGiocatori/aggiungigiocatori.dart';
 
 main() => runApp(ContaPunti());
 

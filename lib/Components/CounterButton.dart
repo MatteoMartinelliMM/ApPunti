@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/Model/Constants.dart';
 
 class CounterButton extends StatelessWidget {
   VoidCallback onTap;
@@ -17,21 +18,37 @@ class CounterButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        child: Align(
-          alignment: Alignment.center,
-          child: Text(
-            buttonTitle,
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: width - 10, fontWeight: FontWeight.bold),
-          ),
-        ),
+        child: buildButtonLabel(),
         width: width,
         height: height,
-        decoration: BoxDecoration(
-          border: Border.all(),
-          shape: BoxShape.circle,
-        ),
+        decoration: buildDecorationOrImage(),
       ),
     );
+  }
+
+  BoxDecoration buildDecorationOrImage() {
+    if (buttonTitle.contains(IMAGE_PATH)) {
+      return BoxDecoration(
+          shape: BoxShape.circle,
+          image: DecorationImage(
+              image: AssetImage(buttonTitle), fit: BoxFit.fill));
+    }
+    return BoxDecoration(
+      border: Border.all(),
+      shape: BoxShape.circle,
+    );
+  }
+
+  Align buildButtonLabel() {
+    if (!buttonTitle.contains(IMAGE_PATH))
+      return Align(
+        alignment: Alignment.center,
+        child: Text(
+          buttonTitle,
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: width - 10, fontWeight: FontWeight.bold),
+        ),
+      );
+    return null;
   }
 }

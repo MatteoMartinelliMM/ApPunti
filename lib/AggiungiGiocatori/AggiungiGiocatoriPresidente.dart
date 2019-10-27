@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/BaseAggiungiGiocatori.dart';
+import 'package:flutter_app/AggiungiGiocatori/BaseAggiungiGiocatori.dart';
 
-import 'BaseContaPunti.dart';
-import 'Model/Constants.dart';
-import 'Model/Giocatore.dart';
+import '../ContaPunti/BaseContaPunti.dart';
+import '../Model/Constants.dart';
+import '../Model/Giocatore.dart';
 
 class AggiungiGiocatoriPresidente extends StatefulWidget
     implements BaseAggiungiGiocatori {

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/Model/Giocatore.dart';
 
 import 'BaseContaPunti.dart';
-import 'Components/CounterLayout.dart';
-import 'Components/avatarstack.dart';
-import 'Model/Constants.dart';
+import '../Components/CounterLayout.dart';
+import '../Components/AvatarStack.dart';
+import '../Model/Constants.dart';
 
 class ScoponeContaPunti extends StatefulWidget implements BaseContaPunti {
   int count1;

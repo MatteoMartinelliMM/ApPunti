@@ -1,4 +1,4 @@
-import 'Model/Giocatore.dart';
+import '../Model/Giocatore.dart';
 
 abstract class BaseAggiungiGiocatori {
   bool canGoNext();

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'BaseAggiungiGiocatori.dart';
-import 'Components/AutoCompleteText.dart';
-import 'Model/Constants.dart';
-import 'Model/Giocatore.dart';
+import '../Components/AutoCompleteText.dart';
+import '../Model/Constants.dart';
+import '../Model/Giocatore.dart';
 
 typedef OnSubmitted = void Function(Giocatore g);
 

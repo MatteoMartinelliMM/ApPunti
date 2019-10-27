@@ -4,7 +4,7 @@ import 'package:flutter_app/Model/Constants.dart';
 import 'package:flutter_app/Model/Giocatore.dart';
 
 import 'BaseAggiungiGiocatori.dart';
-import 'contapunti.dart';
+import '../ContaPunti/contapunti.dart';
 
 List<FocusNode> focuseNodeList;
 List<TextEditingController> controllerList;
