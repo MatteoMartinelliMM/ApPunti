@@ -1,13 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/Model/Constants.dart';
 import 'package:flutter_app/AggiungiGiocatori/AggiungiGiocatoriScopone.dart';
+import 'package:flutter_app/Model/Constants.dart';
 
+import '../ContaPunti/contapunti.dart';
+import '../Model/Giocatore.dart';
 import 'AggiungiGiocatoriBriscolaAChiamata.dart';
 import 'AggiungiGiocatoriPresidente.dart';
+import 'AggiungiGiocatoriScopa.dart';
 import 'BaseAggiungiGiocatori.dart';
-import '../Model/Giocatore.dart';
-import '../ContaPunti/contapunti.dart';
 
 class SelezionaGiocatori extends StatefulWidget {
   String gioco;
@@ -38,6 +39,14 @@ class SelezionaGiocatoriState extends State<SelezionaGiocatori> {
   @override
   void initState() {
     switch (gioco) {
+      case BRISCOLA:
+      case SCOPA:
+      case CIRULLA:
+        aggiungiGiocatoriBody =
+            new AggiungiGiocatoriScopa(giocatori, gioco, () {
+          onMinimumGiocatoriReached();
+        });
+        break;
       case SCOPONE_SCIENTIFICO:
         giocatori = new List(4);
         focusNodeList = new List();
