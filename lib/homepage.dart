@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_app/Model/Constants.dart';
 
 import 'AggiungiGiocatori/aggiungigiocatori.dart';
@@ -9,6 +10,8 @@ main() => runApp(ContaPunti());
 class ContaPunti extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     return MaterialApp(
       title: 'Conta punti',
       theme: ThemeData.dark(),
