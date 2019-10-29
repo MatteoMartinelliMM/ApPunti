@@ -83,9 +83,41 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
       case TLE:
         return tle();
       case QUATLO:
-        break;
+        return quatlo();
     }
-    return tle();
+  }
+
+  Widget quatlo() {
+    return Align(
+        alignment: Alignment.center,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Card(
+              elevation: 2.0,
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  teamCard(new Giocatore.newGiocatore(""), 0),
+                  teamCard(new Giocatore.newGiocatore(""), 1)
+                ],
+              ),
+            ),
+            Center(
+              child: Image.asset(IMAGE_PATH + 'vs_small.png'),
+            ),
+            Card(
+              elevation: 2.0,
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  teamCard(new Giocatore.newGiocatore(""), 0),
+                  teamCard(new Giocatore.newGiocatore(""), 1)
+                ],
+              ),
+            ),
+          ],
+        ));
   }
 
   Widget tle() {
@@ -176,7 +208,9 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
           Row(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Spacer(flex: 2,),
+              Spacer(
+                flex: 2,
+              ),
               Flexible(
                 flex: 3,
                 child: Center(
@@ -213,7 +247,9 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
                   ),
                 ),
               ),
-              Spacer(flex: 2,),
+              Spacer(
+                flex: 2,
+              ),
             ],
           )
         ],
@@ -313,5 +349,122 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
         ],
       ),
     );
+  }
+
+  Widget teamCard(Giocatore giocatore, int indexGiocatore) {
+    return Container(
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          nameAndImageFromPlayer(
+              giocatore, indexGiocatore /*, controllerList[indexGiocatore]*/),
+          tabellaPunteggi(giocatore),
+        ],
+      ),
+    );
+  }
+
+  Row nameAndImageFromPlayer(
+    Giocatore giocatore,
+    int indexGiocatore,
+    /*TextEditingController controller*/
+  ) {
+    //controller.text = giocatore.name;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        Padding(
+            padding: EdgeInsets.only(left: 8.0),
+            child: Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                      fit: BoxFit.fill,
+                      image: AssetImage('assets/image/defuser.png'))),
+            )),
+        Expanded(
+          child: Padding(
+              padding: EdgeInsets.only(right: 8.0),
+              child: TextField(
+                // controller: controller,
+                //focusNode: focusNodeList[indexGiocatore],
+                textInputAction: TextInputAction.next,
+                onSubmitted: (value) {
+                  setState(() {
+                    /*focusNodeList[indexGiocatore].unfocus();
+                    if (focusNodeList.length - 1 != indexGiocatore)
+                      FocusScope.of(context)
+                          .requestFocus(focusNodeList[indexGiocatore + 1]);
+                    else
+                      SystemChannels.textInput
+                          .invokeMethod('TextInput.hide'); //CLOSE KEYBOARD
+                    if (controller.text != null && controller.text.isNotEmpty) {
+                      giocatori[indexGiocatore].name = controller.text;
+                    }*/
+                  });
+                },
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: "Inserisci giocatore"),
+              )),
+        )
+      ],
+    );
+  }
+
+  Visibility tabellaPunteggi(Giocatore giocatore) {
+    return Visibility(
+        visible: true, //haveGiocatore(giocatore),
+        child: Padding(
+            padding: EdgeInsets.only(top: 16.0, bottom: 16.0),
+            child: Table(
+              children: [
+                TableRow(children: [
+                  Center(
+                    child: Text(
+                      "PARTITE GIOCATE",
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  Center(
+                    child: Text(
+                      "PARTITE VINTE",
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  Center(
+                    child: Text(
+                      "PERCENTUALE",
+                      textAlign: TextAlign.center,
+                    ),
+                  )
+                ]),
+                TableRow(children: [
+                  Center(
+                    child: Text(
+                      "20",
+                      style: TextStyle(fontStyle: FontStyle.italic),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  Center(
+                    child: Text(
+                      "20",
+                      style: TextStyle(fontStyle: FontStyle.italic),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  Center(
+                    child: Text(
+                      "20",
+                      style: TextStyle(fontStyle: FontStyle.italic),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ])
+              ],
+            )));
   }
 }
