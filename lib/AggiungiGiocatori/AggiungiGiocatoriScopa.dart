@@ -96,8 +96,10 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
   Widget getBody() {
     switch (widget.howmanyPlayer) {
       case DUO:
+        widget.giocatori = widget.giocatori?.sublist(0, 2) ?? new List(2);
         return duo();
       case TLE:
+        widget.giocatori = widget.giocatori?.sublist(0, 3) ?? new List(3);
         return tle();
       case QUATLO:
         return quatlo();
