@@ -21,13 +21,27 @@ class AggiungiGiocatoriScopa extends StatefulWidget
 
   @override
   bool canGoNext() {
-    return false;
+    switch (howmanyPlayer) {
+      case DUO:
+        return allPlayersAreSetted(2);
+      case TLE:
+        return allPlayersAreSetted(3);
+      case QUATLO:
+        return false;
+      default:
+        return false;
+    }
   }
 
   @override
   List<Giocatore> onFabClick() {
-    // TODO: implement onFabClick
-    return null;
+    return giocatori;
+  }
+
+  bool allPlayersAreSetted(int howMany) {
+    if (giocatori == null || giocatori.length != howMany) return false;
+    for (Giocatore g in giocatori) if (g.name == null) return false;
+    return true;
   }
 }
 
@@ -59,7 +73,10 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
                       });
                     })),
           ),
-          Expanded(child: Align(alignment: Alignment.center, child: getBody()))
+          Expanded(
+              child: Align(
+                  alignment: Alignment.center,
+                  child: SingleChildScrollView(child: getBody())))
         ],
       ),
     );
