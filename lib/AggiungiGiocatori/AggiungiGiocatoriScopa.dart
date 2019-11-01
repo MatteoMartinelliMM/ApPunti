@@ -12,6 +12,8 @@ class AggiungiGiocatoriScopa extends StatefulWidget
   String howmanyPlayer;
   List<String> nrOfPlayer;
 
+  List<TextEditingController> etCList;
+
   AggiungiGiocatoriScopa(this.giocatori, this.gioco, this.callback);
 
   @override
@@ -40,7 +42,7 @@ class AggiungiGiocatoriScopa extends StatefulWidget
 
   bool allPlayersAreSetted(int howMany) {
     if (giocatori == null || giocatori.length != howMany) return false;
-    for (Giocatore g in giocatori) if (g.name == null) return false;
+    for (Giocatore g in giocatori) if (g.name == null || g.name.isEmpty) return false;
     return true;
   }
 }
@@ -70,6 +72,7 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
                     onChanged: (value) {
                       setState(() {
                         widget.howmanyPlayer = value;
+                        widget.callback;
                       });
                     })),
           ),
@@ -97,12 +100,36 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
     switch (widget.howmanyPlayer) {
       case DUO:
         widget.giocatori = widget.giocatori?.sublist(0, 2) ?? new List(2);
+        widget.etCList = widget.etCList?.sublist(0, 2) ?? new List(2);
+        for (int i = 0; i < 2; i++) {
+          if (widget.etCList[i] == null)
+            widget.etCList[i] = new TextEditingController();
+          if (widget.giocatori[i] == null)
+            widget.giocatori[i] = new Giocatore.newGiocatore('');
+          widget.etCList[i].text = widget.giocatori[i]?.name ?? '';
+        }
         return duo();
       case TLE:
-        widget.giocatori = widget.giocatori?.sublist(0, 3) ?? new List(3);
+        keepInsertedPlayer(3);
         return tle();
       case QUATLO:
+        keepInsertedPlayer(4);
         return quatlo();
+    }
+  }
+
+  void keepInsertedPlayer(int toKeep) {
+    if (widget.giocatori.length < toKeep) {
+      List<Giocatore> tempList = widget.giocatori.sublist(0, toKeep - 1);
+      tempList.add(new Giocatore.newGiocatore(''));
+      widget.giocatori = tempList;
+      List<TextEditingController> tempListet =
+          widget.etCList.sublist(0, toKeep - 1);
+      tempListet.add(new TextEditingController());
+      widget.etCList = tempListet;
+    } else {
+      widget.giocatori = widget.giocatori.sublist(0, toKeep - 1);
+      widget.etCList = widget.etCList.sublist(0, toKeep - 1);
     }
   }
 
@@ -171,11 +198,19 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
                             ),
                           ),
                           TextField(
+                            controller: widget.etCList[0],
+                            onSubmitted: (value) {
+                              setState(() {
+                                widget.etCList[0].text = value;
+                                widget.giocatori[0].name = value;
+                                widget.callback;
+                              });
+                            },
                             decoration: InputDecoration(
                               contentPadding:
                                   EdgeInsets.fromLTRB(10.0, 30.0, 10.0, 20.0),
                               border: OutlineInputBorder(),
-                              labelText: "Aggiungi o crea un nuovo giocatore",
+                              labelText: 'Aggiungi o crea un nuovo giocatore',
                             ),
                           ),
                         ],
@@ -206,6 +241,14 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
                             ),
                           ),
                           TextField(
+                            controller: widget.etCList[1],
+                            onSubmitted: (value) {
+                              setState(() {
+                                widget.etCList[1].text = value;
+                                widget.giocatori[1].name = value;
+                                widget.callback;
+                              });
+                            },
                             decoration: InputDecoration(
                               contentPadding:
                                   EdgeInsets.fromLTRB(10.0, 30.0, 10.0, 20.0),
@@ -253,11 +296,19 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
                             ),
                           ),
                           TextField(
+                            controller: widget.etCList[2],
+                            onSubmitted: (value) {
+                              setState(() {
+                                widget.etCList[2].text = value;
+                                widget.giocatori[2].name = value;
+                                widget.callback;
+                              });
+                            },
                             decoration: InputDecoration(
                               contentPadding:
                                   EdgeInsets.fromLTRB(10.0, 30.0, 10.0, 20.0),
                               border: OutlineInputBorder(),
-                              labelText: "Aggiungi o crea un nuovo giocatore",
+                              labelText: 'Aggiungi o crea un nuovo giocatore',
                             ),
                           ),
                         ],
@@ -308,11 +359,20 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
                         ),
                         Expanded(
                           child: TextField(
+                            textInputAction: TextInputAction.done,
+                            controller: widget.etCList[0],
+                            onSubmitted: (value) {
+                              setState(() {
+                                widget.etCList[0].text = value;
+                                widget.giocatori[0].name = value;
+                                widget.callback;
+                              });
+                            },
                             decoration: InputDecoration(
                               contentPadding:
                                   EdgeInsets.fromLTRB(10.0, 30.0, 10.0, 20.0),
                               border: OutlineInputBorder(),
-                              labelText: "Aggiungi o crea un nuovo giocatore",
+                              labelText: 'Aggiungi o crea un nuovo giocatore',
                             ),
                           ),
                         )
@@ -350,11 +410,19 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
                         ),
                         Expanded(
                           child: TextField(
+                            controller: widget.etCList[1],
+                            onSubmitted: (value) {
+                              setState(() {
+                                widget.etCList[1].text = value;
+                                widget.giocatori[1].name = value;
+                                widget.callback;
+                              });
+                            },
                             decoration: InputDecoration(
                               contentPadding:
                                   EdgeInsets.fromLTRB(10.0, 30.0, 10.0, 20.0),
                               border: OutlineInputBorder(),
-                              labelText: "Aggiungi o crea un nuovo giocatore",
+                              labelText: 'Aggiungi o crea un nuovo giocatore',
                             ),
                           ),
                         )
