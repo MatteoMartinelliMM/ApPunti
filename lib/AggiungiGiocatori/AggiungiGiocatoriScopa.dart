@@ -158,8 +158,8 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
-                  teamCard(new Giocatore.newGiocatore(""), 0),
-                  teamCard(new Giocatore.newGiocatore(""), 1)
+                  teamCard(new Giocatore.newGiocatore(''), 0),
+                  teamCard(new Giocatore.newGiocatore(''), 1)
                 ],
               ),
             ),
@@ -171,8 +171,8 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
-                  teamCard(new Giocatore.newGiocatore(""), 2),
-                  teamCard(new Giocatore.newGiocatore(""), 3)
+                  teamCard(new Giocatore.newGiocatore(''), 2),
+                  teamCard(new Giocatore.newGiocatore(''), 3)
                 ],
               ),
             ),
@@ -377,7 +377,9 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
   TextField playerTextFiled(int i) {
     return TextField(
       focusNode: widget.mFocusList[i],
-      textInputAction: TextInputAction.done,
+      textInputAction: widget.mFocusList.length - 1 > i
+          ? TextInputAction.next
+          : TextInputAction.done,
       controller: widget.etCList[i],
       onSubmitted: (value) {
         setState(() {
