@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_app/Model/Constants.dart';
 import 'package:flutter_app/Model/Giocatore.dart';
 
@@ -13,6 +14,7 @@ class AggiungiGiocatoriScopa extends StatefulWidget
   List<String> nrOfPlayer;
 
   List<TextEditingController> etCList;
+  List<FocusNode> mFocusList;
 
   AggiungiGiocatoriScopa(this.giocatori, this.gioco, this.callback);
 
@@ -42,7 +44,8 @@ class AggiungiGiocatoriScopa extends StatefulWidget
 
   bool allPlayersAreSetted(int howMany) {
     if (giocatori == null || giocatori.length != howMany) return false;
-    for (Giocatore g in giocatori) if (g.name == null || g.name.isEmpty) return false;
+    for (Giocatore g in giocatori)
+      if (g.name == null || g.name.isEmpty) return false;
     return true;
   }
 }
@@ -72,7 +75,7 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
                     onChanged: (value) {
                       setState(() {
                         widget.howmanyPlayer = value;
-                        widget.callback;
+                        widget.callback();
                       });
                     })),
           ),
@@ -101,11 +104,14 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
       case DUO:
         widget.giocatori = widget.giocatori?.sublist(0, 2) ?? new List(2);
         widget.etCList = widget.etCList?.sublist(0, 2) ?? new List(2);
+        widget.mFocusList = widget.mFocusList?.sublist(0, 2) ?? new List(2);
         for (int i = 0; i < 2; i++) {
           if (widget.etCList[i] == null)
             widget.etCList[i] = new TextEditingController();
           if (widget.giocatori[i] == null)
             widget.giocatori[i] = new Giocatore.newGiocatore('');
+          if (widget.mFocusList[i] == null)
+            widget.mFocusList[i] = new FocusNode();
           widget.etCList[i].text = widget.giocatori[i]?.name ?? '';
         }
         return duo();
@@ -113,6 +119,9 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
         keepInsertedPlayer(3);
         return tle();
       case QUATLO:
+        if (widget.giocatori.length ==
+            2) //PIGRIZIA PER NON FARE ALTRI CONTROLLI
+          keepInsertedPlayer(3);
         keepInsertedPlayer(4);
         return quatlo();
     }
@@ -120,16 +129,21 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
 
   void keepInsertedPlayer(int toKeep) {
     if (widget.giocatori.length < toKeep) {
-      List<Giocatore> tempList = widget.giocatori.sublist(0, toKeep - 1);
+      List<Giocatore> tempList =
+          widget.giocatori.sublist(0, toKeep - 1); //todo vedere come cambiarlo
       tempList.add(new Giocatore.newGiocatore(''));
       widget.giocatori = tempList;
       List<TextEditingController> tempListet =
           widget.etCList.sublist(0, toKeep - 1);
       tempListet.add(new TextEditingController());
       widget.etCList = tempListet;
+      List<FocusNode> tempListFoc = widget.mFocusList.sublist(0, toKeep - 1);
+      tempListFoc.add(new FocusNode());
+      widget.mFocusList = tempListFoc;
     } else {
-      widget.giocatori = widget.giocatori.sublist(0, toKeep - 1);
-      widget.etCList = widget.etCList.sublist(0, toKeep - 1);
+      widget.giocatori = widget.giocatori.sublist(0, toKeep);
+      widget.etCList = widget.etCList.sublist(0, toKeep);
+      widget.mFocusList = widget.mFocusList.sublist(0, toKeep);
     }
   }
 
@@ -157,8 +171,8 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
-                  teamCard(new Giocatore.newGiocatore(""), 0),
-                  teamCard(new Giocatore.newGiocatore(""), 1)
+                  teamCard(new Giocatore.newGiocatore(""), 2),
+                  teamCard(new Giocatore.newGiocatore(""), 3)
                 ],
               ),
             ),
@@ -197,22 +211,7 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
                                           IMAGE_PATH + 'defuser.png'))),
                             ),
                           ),
-                          TextField(
-                            controller: widget.etCList[0],
-                            onSubmitted: (value) {
-                              setState(() {
-                                widget.etCList[0].text = value;
-                                widget.giocatori[0].name = value;
-                                widget.callback;
-                              });
-                            },
-                            decoration: InputDecoration(
-                              contentPadding:
-                                  EdgeInsets.fromLTRB(10.0, 30.0, 10.0, 20.0),
-                              border: OutlineInputBorder(),
-                              labelText: 'Aggiungi o crea un nuovo giocatore',
-                            ),
-                          ),
+                          playerTextFiled(0),
                         ],
                       ),
                     ),
@@ -240,22 +239,7 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
                                           IMAGE_PATH + 'defuser.png'))),
                             ),
                           ),
-                          TextField(
-                            controller: widget.etCList[1],
-                            onSubmitted: (value) {
-                              setState(() {
-                                widget.etCList[1].text = value;
-                                widget.giocatori[1].name = value;
-                                widget.callback;
-                              });
-                            },
-                            decoration: InputDecoration(
-                              contentPadding:
-                                  EdgeInsets.fromLTRB(10.0, 30.0, 10.0, 20.0),
-                              border: OutlineInputBorder(),
-                              labelText: "Aggiungi o crea un nuovo giocatore",
-                            ),
-                          ),
+                          playerTextFiled(1),
                         ],
                       ),
                     ),
@@ -295,22 +279,7 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
                                           IMAGE_PATH + 'defuser.png'))),
                             ),
                           ),
-                          TextField(
-                            controller: widget.etCList[2],
-                            onSubmitted: (value) {
-                              setState(() {
-                                widget.etCList[2].text = value;
-                                widget.giocatori[2].name = value;
-                                widget.callback;
-                              });
-                            },
-                            decoration: InputDecoration(
-                              contentPadding:
-                                  EdgeInsets.fromLTRB(10.0, 30.0, 10.0, 20.0),
-                              border: OutlineInputBorder(),
-                              labelText: 'Aggiungi o crea un nuovo giocatore',
-                            ),
-                          ),
+                          playerTextFiled(2),
                         ],
                       ),
                     ),
@@ -358,23 +327,7 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
                           ),
                         ),
                         Expanded(
-                          child: TextField(
-                            textInputAction: TextInputAction.done,
-                            controller: widget.etCList[0],
-                            onSubmitted: (value) {
-                              setState(() {
-                                widget.etCList[0].text = value;
-                                widget.giocatori[0].name = value;
-                                widget.callback;
-                              });
-                            },
-                            decoration: InputDecoration(
-                              contentPadding:
-                                  EdgeInsets.fromLTRB(10.0, 30.0, 10.0, 20.0),
-                              border: OutlineInputBorder(),
-                              labelText: 'Aggiungi o crea un nuovo giocatore',
-                            ),
-                          ),
+                          child: playerTextFiled(0),
                         )
                       ],
                     )
@@ -408,24 +361,7 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
                                         IMAGE_PATH + 'defuser.png'))),
                           ),
                         ),
-                        Expanded(
-                          child: TextField(
-                            controller: widget.etCList[1],
-                            onSubmitted: (value) {
-                              setState(() {
-                                widget.etCList[1].text = value;
-                                widget.giocatori[1].name = value;
-                                widget.callback;
-                              });
-                            },
-                            decoration: InputDecoration(
-                              contentPadding:
-                                  EdgeInsets.fromLTRB(10.0, 30.0, 10.0, 20.0),
-                              border: OutlineInputBorder(),
-                              labelText: 'Aggiungi o crea un nuovo giocatore',
-                            ),
-                          ),
-                        )
+                        Expanded(child: playerTextFiled(1))
                       ],
                     )
                   ],
@@ -434,6 +370,30 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  TextField playerTextFiled(int i) {
+    return TextField(
+      focusNode: widget.mFocusList[i],
+      textInputAction: TextInputAction.done,
+      controller: widget.etCList[i],
+      onSubmitted: (value) {
+        setState(() {
+          if (widget.mFocusList.length - 1 > i)
+            FocusScope.of(context).requestFocus(widget.mFocusList[i + 1]);
+          else
+            SystemChannels.textInput.invokeMethod('TextInput.hide');
+          widget.etCList[i].text = value;
+          widget.giocatori[i].name = value;
+          widget.callback;
+        });
+      },
+      decoration: InputDecoration(
+        contentPadding: EdgeInsets.fromLTRB(10.0, 30.0, 10.0, 20.0),
+        border: OutlineInputBorder(),
+        labelText: 'Aggiungi o crea un nuovo giocatore',
       ),
     );
   }
@@ -474,28 +434,7 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
         Expanded(
           child: Padding(
               padding: EdgeInsets.only(right: 8.0),
-              child: TextField(
-                // controller: controller,
-                //focusNode: focusNodeList[indexGiocatore],
-                textInputAction: TextInputAction.next,
-                onSubmitted: (value) {
-                  setState(() {
-                    /*focusNodeList[indexGiocatore].unfocus();
-                    if (focusNodeList.length - 1 != indexGiocatore)
-                      FocusScope.of(context)
-                          .requestFocus(focusNodeList[indexGiocatore + 1]);
-                    else
-                      SystemChannels.textInput
-                          .invokeMethod('TextInput.hide'); //CLOSE KEYBOARD
-                    if (controller.text != null && controller.text.isNotEmpty) {
-                      giocatori[indexGiocatore].name = controller.text;
-                    }*/
-                  });
-                },
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: "Inserisci giocatore"),
-              )),
+              child: playerTextFiled(indexGiocatore)),
         )
       ],
     );
