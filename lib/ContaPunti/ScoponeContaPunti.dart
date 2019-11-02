@@ -16,7 +16,9 @@ class ScoponeContaPunti extends StatefulWidget implements BaseContaPunti {
 
   ScoponeContaPuntiState scoponeState;
 
-  ScoponeContaPunti(this.giocatori, this.callback) {
+  bool isScopone;
+
+  ScoponeContaPunti(this.giocatori, this.callback, this.isScopone) {
     p11 = false;
     p21 = true;
     count1 = 0;
@@ -52,56 +54,59 @@ class ScoponeContaPuntiState extends State<ScoponeContaPunti> {
           Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Align(
-                alignment: Alignment.topCenter,
-                child: Container(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Align(
-                          alignment: Alignment.topCenter,
-                          child: Text("Punti vittoria",
-                              style: TextStyle(fontSize: 25),
-                              textAlign: TextAlign.center),
+              Visibility(
+                visible: widget.isScopone,
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: Container(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Align(
+                            alignment: Alignment.topCenter,
+                            child: Text("Punti vittoria",
+                                style: TextStyle(fontSize: 25),
+                                textAlign: TextAlign.center),
+                          ),
                         ),
-                      ),
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Checkbox(
-                            value: widget.p11,
-                            onChanged: (bool value) {
-                              setState(() {
-                                widget.p11 = value;
-                                widget.p21 = !value;
-                                if (widget.calcolaVittoria()) widget.callback();
-                              });
-                            },
-                          ),
-                          Text("11 punti")
-                        ],
-                      ),
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Checkbox(
-                            value: widget.p21,
-                            onChanged: (bool value) {
-                              setState(() {
-                                widget.p21 = value;
-                                widget.p11 = !value;
-                                if (widget.calcolaVittoria()) widget.callback();
-                              });
-                            },
-                          ),
-                          Text("21 punti")
-                        ],
-                      )
-                    ],
+                        Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Checkbox(
+                              value: widget.p11,
+                              onChanged: (bool value) {
+                                setState(() {
+                                  widget.p11 = value;
+                                  widget.p21 = !value;
+                                  if (widget.calcolaVittoria()) widget.callback();
+                                });
+                              },
+                            ),
+                            Text("11 punti")
+                          ],
+                        ),
+                        Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Checkbox(
+                              value: widget.p21,
+                              onChanged: (bool value) {
+                                setState(() {
+                                  widget.p21 = value;
+                                  widget.p11 = !value;
+                                  if (widget.calcolaVittoria()) widget.callback();
+                                });
+                              },
+                            ),
+                            Text("21 punti")
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),

@@ -5,6 +5,7 @@ import 'package:flutter_app/Model/Giocatore.dart';
 
 import 'BaseContaPunti.dart';
 import 'BriscolaAChiamataContaPunti.dart';
+import 'ScopaContaPunti.dart';
 import 'ScoponeContaPunti.dart';
 
 class ContaPuntiGiocatori extends StatefulWidget {
@@ -67,8 +68,16 @@ class ContaPuntiGiocatoriState extends State<ContaPuntiGiocatori> {
 
   Widget getContaPuntiLayout(String gioco) {
     switch (gioco) {
+      case SCOPA:
+      case BRISCOLA:
+      case CIRULLA:
+        if (widget.giocatori.length == 4)
+          return new ScoponeContaPunti(giocatori, callback, gioco == SCOPA);
+        else
+          return new ScopaContaPunti(giocatori, gioco, callback);
+        break;
       case SCOPONE_SCIENTIFICO:
-        return new ScoponeContaPunti(giocatori, callback);
+        return new ScoponeContaPunti(giocatori, callback, true);
       case BRISCOLA_A_CHIAMATA:
         return new BriscolaAChiamataContaPunti(giocatori, callback);
       case PRESIDENTE:
