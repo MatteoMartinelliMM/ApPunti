@@ -56,9 +56,6 @@ class ContaPuntiGiocatoriState extends State<ContaPuntiGiocatori> {
                   return rigiocaDialog();
                 },
               );
-              setState(() {
-                initState();
-              });
             },
             child: Icon(Icons.save),
           )),

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Model/Giocatore.dart';
 
-import 'BaseContaPunti.dart';
-import '../Components/CounterLayout.dart';
 import '../Components/AvatarStack.dart';
+import '../Components/CounterLayout.dart';
 import '../Model/Constants.dart';
+import 'BaseContaPunti.dart';
 
 class ScoponeContaPunti extends StatefulWidget implements BaseContaPunti {
   int count1;
@@ -35,9 +35,13 @@ class ScoponeContaPunti extends StatefulWidget implements BaseContaPunti {
 
   @override
   bool calcolaVittoria() {
-    if (p21 && (count1 > 21 || count2 > 21)) return true;
-    if (p11 && (count1 > 11 || count2 > 11)) return true;
-    return false;
+    if (isScopone) {
+      if (p21 && (count1 > 21 || count2 > 21)) return true;
+      if (p11 && (count1 > 11 || count2 > 11)) return true;
+      return false;
+    } else {
+      return count1 > 0 || count2 > 0;
+    }
   }
 
   @override
@@ -45,7 +49,6 @@ class ScoponeContaPunti extends StatefulWidget implements BaseContaPunti {
 }
 
 class ScoponeContaPuntiState extends State<ScoponeContaPunti> {
-
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -54,8 +57,8 @@ class ScoponeContaPuntiState extends State<ScoponeContaPunti> {
           Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Visibility(
-                visible: widget.isScopone,
+              Opacity(
+                opacity: widget.isScopone ? 1.0 : 0.0,
                 child: Align(
                   alignment: Alignment.topCenter,
                   child: Container(
@@ -81,7 +84,8 @@ class ScoponeContaPuntiState extends State<ScoponeContaPunti> {
                                 setState(() {
                                   widget.p11 = value;
                                   widget.p21 = !value;
-                                  if (widget.calcolaVittoria()) widget.callback();
+                                  if (widget.calcolaVittoria())
+                                    widget.callback();
                                 });
                               },
                             ),
@@ -98,7 +102,8 @@ class ScoponeContaPuntiState extends State<ScoponeContaPunti> {
                                 setState(() {
                                   widget.p21 = value;
                                   widget.p11 = !value;
-                                  if (widget.calcolaVittoria()) widget.callback();
+                                  if (widget.calcolaVittoria())
+                                    widget.callback();
                                 });
                               },
                             ),
@@ -228,7 +233,7 @@ class ScoponeContaPuntiState extends State<ScoponeContaPunti> {
       if (widget.count1 > 0) {
         widget.count1--;
         widget.etC1.text = widget.count1.toString();
-        if (widget.calcolaVittoria()) widget.callback();
+        widget.callback();
       }
     });
   }
@@ -236,7 +241,7 @@ class ScoponeContaPuntiState extends State<ScoponeContaPunti> {
   void onTextChangeTeam1() {
     setState(() {
       widget.count1 = int.parse(widget.etC1.text);
-      if (widget.calcolaVittoria()) widget.callback();
+      widget.callback();
     });
   }
 
@@ -253,7 +258,7 @@ class ScoponeContaPuntiState extends State<ScoponeContaPunti> {
       if (widget.count2 > 0) {
         widget.count2--;
         widget.etC2.text = widget.count2.toString();
-        if (widget.calcolaVittoria()) widget.callback();
+        widget.callback();
       }
     });
   }
@@ -261,7 +266,7 @@ class ScoponeContaPuntiState extends State<ScoponeContaPunti> {
   void onTextChangeTeam2() {
     setState(() {
       widget.count2 = int.parse(widget.etC2.text);
-      if (widget.calcolaVittoria()) widget.callback();
+      widget.callback();
     });
   }
 
