@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "190270528668",
+    "firebase_url": "https://appunti-ea518.firebaseio.com",
+    "project_id": "appunti-ea518",
+    "storage_bucket": "appunti-ea518.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:190270528668:android:c8c1961d94a1d60dcf6159",
+        "android_client_info": {
+          "package_name": "com.lagangdelfubbachione.appunti.it"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "190270528668-8k4jkf1vimv0o66uga2nn87f41347kho.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3neu-nlz7dOpSApawZ26REeVWYDFA3Hs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "190270528668-8k4jkf1vimv0o66uga2nn87f41347kho.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

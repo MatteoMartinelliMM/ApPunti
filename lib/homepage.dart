@@ -1,9 +1,12 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app/Model/Constants.dart';
 
 import 'AggiungiGiocatori/aggiungigiocatori.dart';
+import 'Model/FirebaseDatabaseHelper.dart';
 
 main() => runApp(ContaPunti());
 
@@ -30,6 +33,7 @@ class HomePage extends StatelessWidget {
 
 class SelezionaGioco extends StatelessWidget {
   List<String> _giochi = new List();
+  FirebaseDatabaseHelper fbDh = new FirebaseDatabaseHelper();
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +60,7 @@ class SelezionaGioco extends StatelessWidget {
           child: Image.asset(getImageAssets(_giochi[index]))),
       trailing: Icon(Icons.keyboard_arrow_right),
       onTap: () {
+        fbDh.createChild(new Random().nextInt(20));
         onGiocoSelected(_giochi[index], context);
       },
     );

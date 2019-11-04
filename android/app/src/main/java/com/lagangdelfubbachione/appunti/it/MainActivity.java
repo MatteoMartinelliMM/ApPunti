@@ -1,4 +1,4 @@
-package com.manualmente.it.flutterapp;
+package com.lagangdelfubbachione.appunti.it;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;
