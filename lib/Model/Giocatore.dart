@@ -6,6 +6,7 @@ import 'FirebaseConstans.dart';
 class Giocatore {
   String name;
   String numero;
+  String url;
   int points;
   double pointDouble;
   Gioco gioco;
@@ -16,6 +17,7 @@ class Giocatore {
     this.name = name;
     points = 0;
     this.pointDouble = 0.0;
+    this.url = '';
   }
 
   @override
@@ -26,5 +28,6 @@ class Giocatore {
   Giocatore.fromSnapshot(DataSnapshot datasnaphot) {
     name = datasnaphot.value[NAME];
     numero = datasnaphot.value[NUMERO].toString();
+    url = datasnaphot.value[URL];
   }
 }

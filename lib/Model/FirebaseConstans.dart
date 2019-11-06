@@ -7,3 +7,4 @@ const GIOCHI = 'Giochi';
 const UTENTI = 'Utenti';
 const NAME = 'name';
 const NUMERO = 'numero';
+const URL = 'url';
