@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -60,7 +61,6 @@ class SelezionaGioco extends StatelessWidget {
           child: Image.asset(getImageAssets(_giochi[index]))),
       trailing: Icon(Icons.keyboard_arrow_right),
       onTap: () {
-        fbDh.createChild(new Random().nextInt(20));
         onGiocoSelected(_giochi[index], context);
       },
     );

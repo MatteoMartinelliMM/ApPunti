@@ -1,10 +1,13 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app/Model/Constants.dart';
+import 'package:flutter_app/Model/FirebaseDatabaseHelper.dart';
 import 'package:flutter_app/Model/Giocatore.dart';
 
-import 'BaseAggiungiGiocatori.dart';
 import '../ContaPunti/contapunti.dart';
+import 'BaseAggiungiGiocatori.dart';
 
 List<FocusNode> focuseNodeList;
 List<TextEditingController> controllerList;
@@ -14,9 +17,14 @@ class Scopone extends StatefulWidget implements BaseAggiungiGiocatori {
   List<TextEditingController> controllerList;
   List<FocusNode> focusNodeList;
   BuildContext context;
+  FirebaseDatabaseHelper fDbH;
+
+  List<bool> isLoading;
 
   Scopone(
-      this.giocatori, this.controllerList, this.focusNodeList, this.context);
+      this.giocatori, this.controllerList, this.focusNodeList, this.context) {
+    fDbH = new FirebaseDatabaseHelper();
+  }
 
   @override
   State<StatefulWidget> createState() {
@@ -39,9 +47,17 @@ class ScoponeState extends State<Scopone> {
   List<TextEditingController> controllerList;
   List<FocusNode> focusNodeList;
   BuildContext context;
+  ObjectKey boolKey;
 
   ScoponeState(
       this.giocatori, this.controllerList, this.focusNodeList, this.context);
+
+  @override
+  void initState() {
+    widget.isLoading = new List();
+    for (Giocatore g in widget.giocatori) widget.isLoading.add(false);
+    boolKey = new ObjectKey(widget.isLoading);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -121,68 +137,72 @@ class ScoponeState extends State<Scopone> {
   Widget teamCard(Giocatore giocatore, int indexGiocatore) {
     return Container(
       child: Column(
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          nameAndImageFromPlayer(
-              giocatore, indexGiocatore, controllerList[indexGiocatore]),
-          tabellaPunteggi(giocatore),
-        ],
+        children: getChildren(giocatore, indexGiocatore, widget.controllerList,
+            widget.isLoading[indexGiocatore]),
       ),
     );
   }
 
   Visibility tabellaPunteggi(Giocatore giocatore) {
     return Visibility(
-        visible: true, //haveGiocatore(giocatore),
-        child: Padding(
-            padding: EdgeInsets.only(top: 16.0, bottom: 16.0),
-            child: Table(
-              children: [
-                TableRow(children: [
-                  Center(
-                    child: Text(
-                      "PARTITE GIOCATE",
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  Center(
-                    child: Text(
-                      "PARTITE VINTE",
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  Center(
-                    child: Text(
-                      "PERCENTUALE",
-                      textAlign: TextAlign.center,
-                    ),
-                  )
-                ]),
-                TableRow(children: [
-                  Center(
-                    child: Text(
-                      "20",
-                      style: TextStyle(fontStyle: FontStyle.italic),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  Center(
-                    child: Text(
-                      "20",
-                      style: TextStyle(fontStyle: FontStyle.italic),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  Center(
-                    child: Text(
-                      "20",
-                      style: TextStyle(fontStyle: FontStyle.italic),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ])
-              ],
-            )));
+        visible: giocatore.gioco != null,
+        child: giocatore.gioco == null
+            ? Container()
+            : Padding(
+                padding: EdgeInsets.only(top: 16.0, bottom: 16.0),
+                child: Table(
+                  children: [
+                    TableRow(children: [
+                      Center(
+                        child: Text(
+                          "PARTITE GIOCATE",
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Center(
+                        child: Text(
+                          "PARTITE VINTE",
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Center(
+                        child: Text(
+                          "PERCENTUALE",
+                          textAlign: TextAlign.center,
+                        ),
+                      )
+                    ]),
+                    TableRow(children: [
+                      Center(
+                        child: Text(
+                          giocatore.gioco.partiteGiocate > 0
+                              ? giocatore.gioco.partiteGiocate.toString()
+                              : "N/D",
+                          style: TextStyle(fontStyle: FontStyle.italic),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Center(
+                        child: Text(
+                          giocatore.gioco.partiteGiocate > 0
+                              ? giocatore.gioco.partiteVinte.toString()
+                              : "N/D",
+                          style: TextStyle(fontStyle: FontStyle.italic),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Center(
+                        child: Text(
+                          giocatore.gioco.partiteGiocate > 0
+                              ? getPercentage(giocatore)
+                              : "N/D",
+                          style: TextStyle(fontStyle: FontStyle.italic),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ])
+                  ],
+                )));
   }
 
   Row nameAndImageFromPlayer(Giocatore giocatore, int indexGiocatore,
@@ -210,8 +230,18 @@ class ScoponeState extends State<Scopone> {
                 focusNode: focusNodeList[indexGiocatore],
                 textInputAction: TextInputAction.next,
                 onSubmitted: (value) {
-                  setState(() {
-                    focusNodeList[indexGiocatore].unfocus();
+                  widget.fDbH
+                      .getGiocatore(value, SCOPONE_SCIENTIFICO)
+                      .then((Giocatore g) {
+                    setState(() {
+                      widget.isLoading[indexGiocatore] = g == null;
+                      if (g != null) {
+                        widget.giocatori[indexGiocatore] = g;
+                        controller.text = g.name;
+                      }
+                    });
+                  });
+                  /*focusNodeList[indexGiocatore].unfocus();
                     if (focusNodeList.length - 1 != indexGiocatore)
                       FocusScope.of(context)
                           .requestFocus(focusNodeList[indexGiocatore + 1]);
@@ -220,8 +250,7 @@ class ScoponeState extends State<Scopone> {
                           .invokeMethod('TextInput.hide'); //CLOSE KEYBOARD
                     if (controller.text != null && controller.text.isNotEmpty) {
                       giocatori[indexGiocatore].name = controller.text;
-                    }
-                  });
+                    }*/
                 },
                 decoration: InputDecoration(
                     border: OutlineInputBorder(),
@@ -240,5 +269,48 @@ class ScoponeState extends State<Scopone> {
     for (TextEditingController t in controllerList)
       if (t == null || t.text == null || t.text.isEmpty) return false;
     return true;
+  }
+
+  List<Widget> getChildren(Giocatore giocatore, int indexGiocatore,
+      List<TextEditingController> contrtollerList, bool isLoading) {
+    List<Widget> widgetList = new List();
+    if ((giocatore.name == null || giocatore.name.isEmpty) && !isLoading)
+      widgetList.add(nameAndImageFromPlayer(
+          giocatore, indexGiocatore, contrtollerList[indexGiocatore]));
+    if ((giocatore.name == null || giocatore.name.isEmpty) && isLoading) {
+      widgetList.add(Stack(
+        children: <Widget>[
+          nameAndImageFromPlayer(
+              giocatore, indexGiocatore, contrtollerList[indexGiocatore]),
+          GestureDetector(
+            onTap: null,
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaY: 5.0, sigmaX: 5.0),
+              child: Padding(
+                padding: const EdgeInsets.only(top: 24.0),
+                child: Center(child: CircularProgressIndicator()),
+              ),
+            ),
+          ),
+        ],
+      ));
+    }
+    if (giocatore.name != null && giocatore.name.isNotEmpty) {
+      widgetList.add(nameAndImageFromPlayer(
+          giocatore, indexGiocatore, contrtollerList[indexGiocatore]));
+      widgetList.add(tabellaPunteggi(giocatore));
+    }
+    return widgetList;
+  }
+
+  String getPercentage(Giocatore giocatore) {
+    return (giocatore.gioco.partiteGiocate > 0 &&
+                    giocatore.gioco.partiteVinte == 0
+                ? 0
+                : (giocatore.gioco.partiteVinte /
+                        giocatore.gioco.partiteGiocate) *
+                    100)
+            .toString() +
+        '%';
   }
 }
