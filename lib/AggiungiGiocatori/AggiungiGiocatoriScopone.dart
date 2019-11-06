@@ -227,6 +227,7 @@ class ScoponeState extends State<Scopone> {
               padding: EdgeInsets.only(right: 8.0),
               child: TextField(
                 controller: controller,
+                textCapitalization: TextCapitalization.words,
                 focusNode: focusNodeList[indexGiocatore],
                 textInputAction: TextInputAction.next,
                 onSubmitted: (value) {
@@ -239,15 +240,15 @@ class ScoponeState extends State<Scopone> {
                         widget.giocatori[indexGiocatore] = g;
                         controller.text = g.name;
                       }
+                      if (focusNodeList.length - 1 != indexGiocatore)
+                        FocusScope.of(context)
+                            .requestFocus(focusNodeList[indexGiocatore + 1]);
+                      else
+                        SystemChannels.textInput.invokeMethod('TextInput.hide');
                     });
                   });
                   /*focusNodeList[indexGiocatore].unfocus();
-                    if (focusNodeList.length - 1 != indexGiocatore)
-                      FocusScope.of(context)
-                          .requestFocus(focusNodeList[indexGiocatore + 1]);
-                    else
-                      SystemChannels.textInput
-                          .invokeMethod('TextInput.hide'); //CLOSE KEYBOARD
+                     //CLOSE KEYBOARD
                     if (controller.text != null && controller.text.isNotEmpty) {
                       giocatori[indexGiocatore].name = controller.text;
                     }*/
