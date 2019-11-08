@@ -12,7 +12,7 @@ import 'Giochi/BriscolaAChiamata.dart';
 import 'Giochi/Cirulla.dart';
 import 'Giochi/Gioco.dart';
 import 'Giochi/Presidente.dart';
-import 'Giochi/Scopone.dart';
+import 'Giochi/ScoponeGioco.dart';
 
 class FirebaseDatabaseHelper {
   final database = FirebaseDatabase.instance.setPersistenceEnabled(true);
@@ -40,7 +40,7 @@ class FirebaseDatabaseHelper {
           giocoObj = BriscolaAChiamata.fromSnapshot(datasnaphot);
           break;
         case SCOPONE_SCIENTIFICO:
-          giocoObj = Scopone.fromSnapshot(datasnaphot);
+          giocoObj = ScoponeGioco.fromSnapshot(datasnaphot);
           break;
         case SCOPA:
           giocoObj = Scopa.fromSnapshot(datasnaphot);
@@ -101,5 +101,14 @@ class FirebaseDatabaseHelper {
   Future<Giocatore> getGiocatoreBo(
       String name, String gioco, FutureOr<dynamic> dataSnapshot) {
     databaseReference.child(UTENTI).child(name).once().then(dataSnapshot);
+  }
+
+  void updateGioco(List<Giocatore> giocatori, String gioco) {
+    for (Giocatore g in giocatori) {
+      databaseReference.child(gioco).child(g.name).update(
+          g.gioco is BriscolaAChiamata
+              ? g.gioco.asMapBriscolaAChiamata()
+              : g.gioco.asMap());
+    }
   }
 }

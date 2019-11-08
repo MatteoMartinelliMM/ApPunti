@@ -33,6 +33,11 @@ class BriscolaAChiamataContaPunti extends StatefulWidget
     for (double count in countPunti) if (count >= 5.0) return true;
     return false;
   }
+
+  @override
+  void updatePartita() {
+    // TODO: implement updatePartita
+  }
 }
 
 class BriscolaAChiamataState extends State<BriscolaAChiamataContaPunti> {

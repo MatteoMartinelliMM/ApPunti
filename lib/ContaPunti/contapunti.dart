@@ -88,6 +88,7 @@ class ContaPuntiGiocatoriState extends State<ContaPuntiGiocatori> {
   }
 
   Widget rigiocaDialog() {
+    widget.contaPunti.updatePartita();
     return AlertDialog(
       title: new Text("Vuoi giocare un'altra partita?"),
       actions: <Widget>[

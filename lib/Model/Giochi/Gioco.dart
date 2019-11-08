@@ -2,14 +2,14 @@ import 'package:firebase_database/firebase_database.dart';
 
 import '../FirebaseConstans.dart';
 
-abstract class Gioco{
+abstract class Gioco {
   int _partiteGiocate;
 
   int _partiteVinte;
 
   int get partiteGiocate => _partiteGiocate;
 
-  Gioco.fromSnapshot(DataSnapshot datasnapshot){
+  Gioco.fromSnapshot(DataSnapshot datasnapshot) {
     _partiteGiocate = datasnapshot.value[PARTITE_GIOCATE];
     _partiteVinte = datasnapshot.value[PARTITE_VINTE];
   }
@@ -24,5 +24,14 @@ abstract class Gioco{
     _partiteVinte = value;
   }
 
+  Map<String, int> asMap() {
+    Map<String, int> values = new Map();
+    values[PARTITE_GIOCATE] = _partiteGiocate;
+    values[PARTITE_VINTE] = _partiteVinte;
+    return values;
+  }
 
+  Map<String, double> asMapBriscolaAChiamata() {
+    return new Map();
+  }
 }

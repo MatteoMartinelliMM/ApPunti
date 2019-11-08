@@ -3,10 +3,10 @@ import 'package:firebase_database/firebase_database.dart';
 import '../FirebaseConstans.dart';
 import 'Gioco.dart';
 
-class Scopone extends Gioco {
+class ScoponeGioco extends Gioco {
   int _puntiFatti;
 
-  Scopone.fromSnapshot(DataSnapshot datasnapshot)
+  ScoponeGioco.fromSnapshot(DataSnapshot datasnapshot)
       : super.fromSnapshot(datasnapshot) {
     _puntiFatti = datasnapshot.value[PUNTI_FATTI];
   }
@@ -15,5 +15,12 @@ class Scopone extends Gioco {
 
   set puntiFatti(int value) {
     _puntiFatti = value;
+  }
+
+  @override
+  Map<String, int> asMap() {
+    Map<String, int> asMap = super.asMap();
+    asMap[PUNTI_FATTI] = _puntiFatti;
+    return asMap;
   }
 }

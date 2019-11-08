@@ -17,5 +17,10 @@ class Asse extends Gioco {
     _schiavo = value;
   }
 
-
+  @override
+  Map<String, int> asMap() {
+    Map<String, int> asMap = super.asMap();
+    asMap[SCHIAVO] = _schiavo;
+    return asMap;
+  }
 }

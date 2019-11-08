@@ -50,6 +50,11 @@ class ScopaContaPunti extends StatefulWidget implements BaseContaPunti {
         return false;
     }
   }
+
+  @override
+  void updatePartita() {
+    // TODO: implement updatePartita
+  }
 }
 
 class ScopaContaPuntiState extends State<ScopaContaPunti> {

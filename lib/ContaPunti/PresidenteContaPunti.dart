@@ -41,6 +41,11 @@ class PresidenteContaPunti extends StatefulWidget implements BaseContaPunti {
   State<StatefulWidget> createState() {
     return new PresidenteContaPuntiState();
   }
+
+  @override
+  void updatePartita() {
+    // TODO: implement updatePartita
+  }
 }
 
 class PresidenteContaPuntiState extends State<PresidenteContaPunti> {

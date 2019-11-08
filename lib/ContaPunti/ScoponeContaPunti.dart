@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/Model/FirebaseDatabaseHelper.dart';
 import 'package:flutter_app/Model/Giocatore.dart';
+import 'package:flutter_app/Model/Giochi/ScoponeGioco.dart';
 
 import '../Components/AvatarStack.dart';
 import '../Components/CounterLayout.dart';
@@ -46,6 +48,26 @@ class ScoponeContaPunti extends StatefulWidget implements BaseContaPunti {
 
   @override
   List<Giocatore> giocatori;
+
+  @override
+  void updatePartita() {
+    FirebaseDatabaseHelper fbDbH = new FirebaseDatabaseHelper();
+    for (Giocatore g in giocatori) {
+      g.gioco.partiteGiocate++;
+      if (giocatori.indexOf(g) <= 1) {
+        if (count1 > count2) g.gioco.partiteVinte++;
+        ScoponeGioco gioco = g.gioco as ScoponeGioco;
+        gioco.puntiFatti += count1;
+        g.gioco = gioco;
+      } else {
+        if (count1 < count2) g.gioco.partiteVinte++;
+        ScoponeGioco gioco = g.gioco as ScoponeGioco;
+        gioco.puntiFatti += count2;
+        g.gioco = gioco;
+      }
+    }
+    fbDbH.updateGioco(giocatori, isScopone ? SCOPONE_SCIENTIFICO : BRISCOLA);
+  }
 }
 
 class ScoponeContaPuntiState extends State<ScoponeContaPunti> {

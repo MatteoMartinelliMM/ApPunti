@@ -15,5 +15,12 @@ class Cirulla extends Gioco{
     _puntiFatti = value;
   }
 
+  @override
+  Map<String, int> asMap() {
+    Map<String, int> asMap = super.asMap();
+    asMap[PUNTI_FATTI] = _puntiFatti;
+    return asMap;
+  }
+
 
 }
