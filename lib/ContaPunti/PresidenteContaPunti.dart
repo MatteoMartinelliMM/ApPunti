@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Components/CounterLayout.dart';
 import 'package:flutter_app/ContaPunti/BaseContaPunti.dart';
+import 'package:flutter_app/Model/FirebaseDatabaseHelper.dart';
 import 'package:flutter_app/Model/Giocatore.dart';
+import 'package:flutter_app/Model/Giochi/Presidente.dart';
 
 import '../Model/Constants.dart';
 
@@ -14,7 +16,11 @@ class PresidenteContaPunti extends StatefulWidget implements BaseContaPunti {
   List<TextEditingController> etCSchiavoList;
   List<TextEditingController> etCPresidenteList;
 
-  PresidenteContaPunti(this.giocatori, this.gioco) {
+  bool enable = false;
+
+  VoidCallback callbackDialog;
+
+  PresidenteContaPunti(this.giocatori, this.gioco, this.callbackDialog) {
     countPresidente = new List();
     countSchiavo = new List();
     etCSchiavoList = new List();
@@ -44,7 +50,20 @@ class PresidenteContaPunti extends StatefulWidget implements BaseContaPunti {
 
   @override
   void updatePartita() {
-    // TODO: implement updatePartita
+    int totPartite = getTotPartite();
+    for (Giocatore g in giocatori) {
+      g.gioco.partiteGiocate += totPartite;
+      g.gioco.partiteVinte += countPresidente[giocatori.indexOf(g)];
+      (g.gioco as Presidente).schiavo += countSchiavo[giocatori.indexOf(g)];
+    }
+    FirebaseDatabaseHelper fbdh = new FirebaseDatabaseHelper();
+    fbdh.updateGioco(giocatori, gioco);
+  }
+
+  int getTotPartite() {
+    int toRet;
+    for (int i in countPresidente) toRet += i;
+    return toRet;
   }
 }
 
@@ -63,6 +82,18 @@ class PresidenteContaPuntiState extends State<PresidenteContaPunti> {
                 return new Divider();
               },
               itemCount: widget.giocatori.length),
+        ),
+        Center(
+          child: RaisedButton(
+            child: Text("Salva"),
+            onPressed: widget.enable
+                ? () {
+              setState(() {
+                widget.callbackDialog();
+              });
+                  }
+                : null,
+          ),
         )
       ],
     );
@@ -139,7 +170,9 @@ class PresidenteContaPuntiState extends State<PresidenteContaPunti> {
     setState(() {
       widget.countPresidente[index]++;
       etC.text = widget.countPresidente[index].toString();
-      //TODO ABILITARE BOTTONE O MENU
+      setState(() {
+        widget.enable = calcolaWin();
+      });
     });
   }
 
@@ -147,14 +180,18 @@ class PresidenteContaPuntiState extends State<PresidenteContaPunti> {
     setState(() {
       widget.countPresidente[index]--;
       etC.text = widget.countPresidente[index].toString();
-      //TODO ABILITARE BOTTONE O MENU
+      setState(() {
+        widget.enable = calcolaWin();
+      });
     });
   }
 
   void onPresidenteTextChange(int index, TextEditingController etC) {
     setState(() {
       widget.countPresidente[index] = etC.text as int;
-      //TODO ABILITARE BOTTONE O MENU
+      setState(() {
+        widget.enable = calcolaWin();
+      });
     });
   }
 
@@ -162,7 +199,9 @@ class PresidenteContaPuntiState extends State<PresidenteContaPunti> {
     setState(() {
       widget.countSchiavo[index]++;
       etC.text = widget.countSchiavo[index].toString();
-      //TODO ABILITARE BOTTONE O MENU
+      setState(() {
+        widget.enable = calcolaWin();
+      });
     });
   }
 
@@ -170,14 +209,23 @@ class PresidenteContaPuntiState extends State<PresidenteContaPunti> {
     setState(() {
       widget.countSchiavo[index]--;
       etC.text = widget.countSchiavo[index].toString();
-      //TODO ABILITARE BOTTONE O MENU
+      setState(() {
+        widget.enable = calcolaWin();
+      });
     });
   }
 
   void onSchiavoTextChange(int index, TextEditingController etC) {
     setState(() {
       widget.countSchiavo[index] = etC.text as int;
-      //TODO ABILITARE BOTTONE O MENU
+      setState(() {
+        widget.enable = calcolaWin();
+      });
     });
+  }
+
+  bool calcolaWin() {
+    for (int c in widget.countPresidente) if (c > 0) return true;
+    return false;
   }
 }

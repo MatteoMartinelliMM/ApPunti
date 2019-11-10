@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/Components/CounterLayout.dart';
 import 'package:flutter_app/ContaPunti/BaseContaPunti.dart';
 import 'package:flutter_app/Model/Constants.dart';
+import 'package:flutter_app/Model/FirebaseDatabaseHelper.dart';
 import 'package:flutter_app/Model/Giocatore.dart';
+import 'package:flutter_app/Model/Giochi/Scopa.dart';
 
 class ScopaContaPunti extends StatefulWidget implements BaseContaPunti {
   List<Giocatore> giocatori;
@@ -53,7 +55,17 @@ class ScopaContaPunti extends StatefulWidget implements BaseContaPunti {
 
   @override
   void updatePartita() {
-    // TODO: implement updatePartita
+    List<int> ordered = new List();
+    ordered = counters;
+    ordered.sort();
+    for (Giocatore g in giocatori) {
+      (g.gioco as Scopa).puntiFatti += counters[giocatori.indexOf(g)];
+      g.gioco.partiteGiocate++;
+      if (giocatori.indexOf(g) == counters.indexOf(ordered[0]))
+        g.gioco.partiteVinte++;
+    }
+    FirebaseDatabaseHelper fbDbH = new FirebaseDatabaseHelper();
+    fbDbH.updateGioco(giocatori, gioco);
   }
 }
 
@@ -77,7 +89,7 @@ class ScopaContaPuntiState extends State<ScopaContaPunti> {
                     decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         image: DecorationImage(
-                          fit: BoxFit.fill,
+                            fit: BoxFit.fill,
                             image: AssetImage(IMAGE_PATH + 'scanse.jpg'))),
                   ),
                 ),
@@ -88,15 +100,17 @@ class ScopaContaPuntiState extends State<ScopaContaPunti> {
                       widget.etCList[widget.giocatori.indexOf(g)], () {
                     setState(() {
                       widget.counters[widget.giocatori.indexOf(g)]--;
-                      widget.etCList[widget.giocatori.indexOf(g)].text =
-                          widget.counters[widget.giocatori.indexOf(g)].toString();
+                      widget.etCList[widget.giocatori.indexOf(g)].text = widget
+                          .counters[widget.giocatori.indexOf(g)]
+                          .toString();
                       widget.callback();
                     });
                   }, () {
                     setState(() {
                       widget.counters[widget.giocatori.indexOf(g)]++;
-                      widget.etCList[widget.giocatori.indexOf(g)].text =
-                          widget.counters[widget.giocatori.indexOf(g)].toString();
+                      widget.etCList[widget.giocatori.indexOf(g)].text = widget
+                          .counters[widget.giocatori.indexOf(g)]
+                          .toString();
                       if (widget.calcolaVittoria()) widget.callback();
                     });
                   }, () {

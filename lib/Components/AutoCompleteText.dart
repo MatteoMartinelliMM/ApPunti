@@ -1,6 +1,7 @@
 import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Model/Constants.dart';
+import 'package:flutter_app/Model/FirebaseDatabaseHelper.dart';
 import 'package:flutter_app/Model/Giocatore.dart';
 
 import '../AggiungiGiocatori/AggiungiGiocatoriBriscolaAChiamata.dart';
@@ -34,6 +35,19 @@ class AutoCompleteTextState extends State<AutoCompleteText> {
   @override
   Widget build(BuildContext context) {
     widget.selectedGiocatori = giocatoriKey.value;
+    if (widget.selectedGiocatori.isEmpty && widget.giocatoriFromBe.isEmpty) {
+      FirebaseDatabaseHelper f = new FirebaseDatabaseHelper();
+      f.getAllGiocatori().then((List<Giocatore> giocatori) {
+        setState(() {
+          widget.giocatoriFromBe = giocatori;
+        });
+      });
+      return getAutoComplete();
+    } else
+      return getAutoComplete();
+  }
+
+  AutoCompleteTextField<Giocatore> getAutoComplete() {
     return AutoCompleteTextField<Giocatore>(
       key: key,
       suggestions: widget.giocatoriFromBe,
@@ -46,8 +60,7 @@ class AutoCompleteTextState extends State<AutoCompleteText> {
             decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 image: DecorationImage(
-                    fit: BoxFit.fill,
-                    image: AssetImage(IMAGE_PATH + 'defuser.png'))),
+                    fit: BoxFit.fill, image: getUserImage(item))),
           ),
           title: Text(item.name),
         );
@@ -62,14 +75,7 @@ class AutoCompleteTextState extends State<AutoCompleteText> {
       itemSorter: (g1, g2) {
         return g1.name.compareTo(g2.name);
       },
-      itemSubmitted: (g) => {
-        if (widget.isEnable)
-          {
-            widget.updateGiocatore(g, true),
-            giocatoriKey = new ObjectKey(widget.selectedGiocatori),
-            widget.onSubmitted(g)
-          }
-      },
+      itemSubmitted: (g) => {submitted(g)},
       decoration: InputDecoration(
         enabled: widget.isEnable,
         contentPadding: EdgeInsets.fromLTRB(10.0, 30.0, 10.0, 20.0),
@@ -79,24 +85,27 @@ class AutoCompleteTextState extends State<AutoCompleteText> {
     );
   }
 
+  ImageProvider getUserImage(Giocatore g) {
+    return g?.url.isNotEmpty
+        ? NetworkImage(g.url)
+        : AssetImage(IMAGE_PATH + 'defuser.png') ??
+            AssetImage(IMAGE_PATH + 'defuser.png');
+  }
+
+  void submitted(Giocatore g) {
+    if (widget.isEnable) {
+      widget.updateGiocatore(g, true);
+      giocatoriKey = new ObjectKey(widget.selectedGiocatori);
+      widget.onSubmitted(g);
+    }
+  }
+
   @override
   void initState() {
     key = new GlobalKey();
     widget.selectedGiocatori = new List();
     widget.giocatoriFromBe = new List();
     giocatoriKey = new ObjectKey(widget.selectedGiocatori);
-    widget.giocatoriFromBe.add(new Giocatore.newGiocatore("Teo"));
-    widget.giocatoriFromBe.add(new Giocatore.newGiocatore("Tua mamma"));
-    widget.giocatoriFromBe.add(new Giocatore.newGiocatore("Tuo padre"));
-    widget.giocatoriFromBe.add(new Giocatore.newGiocatore("Scarse"));
-    widget.giocatoriFromBe.add(new Giocatore.newGiocatore("Gio"));
-    widget.giocatoriFromBe.add(new Giocatore.newGiocatore("Lore"));
-    widget.giocatoriFromBe.add(new Giocatore.newGiocatore("Vale"));
-    widget.giocatoriFromBe.add(new Giocatore.newGiocatore("Michi"));
-    widget.giocatoriFromBe.add(new Giocatore.newGiocatore("Ale"));
-    widget.giocatoriFromBe.add(new Giocatore.newGiocatore("Ally"));
-    widget.giocatoriFromBe.add(new Giocatore.newGiocatore("Marco"));
-    widget.giocatoriFromBe.add(new Giocatore.newGiocatore("Dennis"));
   }
 }
 

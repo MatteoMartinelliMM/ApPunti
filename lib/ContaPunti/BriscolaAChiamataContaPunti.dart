@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/ContaPunti/BaseContaPunti.dart';
 import 'package:flutter_app/Components/CounterLayout.dart';
+import 'package:flutter_app/ContaPunti/BaseContaPunti.dart';
 import 'package:flutter_app/Model/Constants.dart';
+import 'package:flutter_app/Model/FirebaseDatabaseHelper.dart';
 import 'package:flutter_app/Model/Giocatore.dart';
+import 'package:flutter_app/Model/Giochi/BriscolaAChiamata.dart';
 
 class BriscolaAChiamataContaPunti extends StatefulWidget
     implements BaseContaPunti {
@@ -10,7 +12,6 @@ class BriscolaAChiamataContaPunti extends StatefulWidget
   List<double> countPunti;
   VoidCallback callback;
   List<TextEditingController> etCList = new List();
-
 
   BriscolaAChiamataContaPunti(this.giocatori, this.callback) {
     countPunti = new List();
@@ -36,12 +37,21 @@ class BriscolaAChiamataContaPunti extends StatefulWidget
 
   @override
   void updatePartita() {
-    // TODO: implement updatePartita
+    List<double> ordered = countPunti;
+    ordered.sort();
+    for (Giocatore g in giocatori) {
+      g.gioco.partiteGiocate++;
+      (g.gioco as BriscolaAChiamata).puntiFatti +=
+          countPunti[giocatori.indexOf(g)];
+      if (giocatori.indexOf(g) == countPunti.indexOf(ordered[0]))
+        g.gioco.partiteVinte++;
+    }
+    FirebaseDatabaseHelper fbdh = FirebaseDatabaseHelper();
+    fbdh.updateGioco(giocatori, BRISCOLA_A_CHIAMATA);
   }
 }
 
 class BriscolaAChiamataState extends State<BriscolaAChiamataContaPunti> {
-
   @override
   Widget build(BuildContext context) {
     return Padding(

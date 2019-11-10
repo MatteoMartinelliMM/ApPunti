@@ -30,4 +30,10 @@ class Giocatore {
     numero = datasnaphot.value[NUMERO].toString();
     url = datasnaphot.value[URL];
   }
+
+  Giocatore.fromMap(Map datasnaphot) {
+    name = datasnaphot[NAME];
+    numero = datasnaphot[NUMERO].toString();
+    url = datasnaphot[URL];
+  }
 }

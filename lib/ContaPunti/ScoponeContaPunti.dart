@@ -20,7 +20,9 @@ class ScoponeContaPunti extends StatefulWidget implements BaseContaPunti {
 
   bool isScopone;
 
-  ScoponeContaPunti(this.giocatori, this.callback, this.isScopone) {
+  String gioco;
+
+  ScoponeContaPunti(this.giocatori, this.callback,this.gioco, this.isScopone) {
     p11 = false;
     p21 = true;
     count1 = 0;
@@ -66,7 +68,7 @@ class ScoponeContaPunti extends StatefulWidget implements BaseContaPunti {
         g.gioco = gioco;
       }
     }
-    fbDbH.updateGioco(giocatori, isScopone ? SCOPONE_SCIENTIFICO : BRISCOLA);
+    fbDbH.updateGioco(giocatori, gioco);
   }
 }
 

@@ -50,12 +50,7 @@ class ContaPuntiGiocatoriState extends State<ContaPuntiGiocatori> {
           visible: widget.contaPunti.calcolaVittoria(),
           child: FloatingActionButton(
             onPressed: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return rigiocaDialog();
-                },
-              );
+              callbackDialog();
             },
             child: Icon(Icons.save),
           )),
@@ -69,22 +64,32 @@ class ContaPuntiGiocatoriState extends State<ContaPuntiGiocatori> {
       case BRISCOLA:
       case CIRULLA:
         if (widget.giocatori.length == 4)
-          return new ScoponeContaPunti(giocatori, callback, gioco == SCOPA);
+          return new ScoponeContaPunti(
+              giocatori, callback, gioco, gioco == SCOPA);
         else
           return new ScopaContaPunti(giocatori, gioco, callback);
         break;
       case SCOPONE_SCIENTIFICO:
-        return new ScoponeContaPunti(giocatori, callback, true);
+        return new ScoponeContaPunti(giocatori, callback, gioco, true);
       case BRISCOLA_A_CHIAMATA:
         return new BriscolaAChiamataContaPunti(giocatori, callback);
       case PRESIDENTE:
       case ASSE:
-        return new PresidenteContaPunti(giocatori, gioco);
+        return new PresidenteContaPunti(giocatori, gioco,callbackDialog);
     }
   }
 
   void callback() {
     setState(() {});
+  }
+
+  void callbackDialog(){
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return rigiocaDialog();
+      },
+    );
   }
 
   Widget rigiocaDialog() {
@@ -100,7 +105,6 @@ class ContaPuntiGiocatoriState extends State<ContaPuntiGiocatori> {
         FlatButton(
           onPressed: () {
             setState(() {
-              //TODO aggiorare dati db e firebase
               Navigator.of(context).pop();
               initState();
             });

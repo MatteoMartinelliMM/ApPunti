@@ -80,32 +80,22 @@ class FirebaseDatabaseHelper {
     return g;
   }
 
-  /*Future<Giocatore> getGiocatoreFuture(String name, String gioco) async {
-    databaseReference
-        .child(UTENTI)
-        .child(name)
-        .once()
-        .then((DataSnapshot datasnaphot) {
-      if (datasnaphot.value[NAME] != null) {
-        Giocatore giocatore = Giocatore.fromSnapshot(datasnaphot);
-        if (gioco != null) {
-          giocatore.gioco = getGiocoInfos(gioco, name);
-          return giocatore;
-        } else
-          return giocatore;
-      } else
-        return null;
+  Future<List<Giocatore>> getAllGiocatori() async {
+    List<Giocatore> giocatori = await databaseReference.child(UTENTI).once().then((DataSnapshot snapshot){
+      List<dynamic> keys = (snapshot.value as Map).keys.toList();
+      List<Giocatore> giocatori = new List();
+      for(String k in keys){
+        Giocatore g = Giocatore.fromMap(snapshot.value[k]);
+        giocatori.add(g);
+      }
+      return giocatori;
     });
-  }*/
-
-  Future<Giocatore> getGiocatoreBo(
-      String name, String gioco, FutureOr<dynamic> dataSnapshot) {
-    databaseReference.child(UTENTI).child(name).once().then(dataSnapshot);
+    return giocatori;
   }
 
   void updateGioco(List<Giocatore> giocatori, String gioco) {
     for (Giocatore g in giocatori) {
-      databaseReference.child(gioco).child(g.name).update(
+      databaseReference..child(GIOCHI).child(gioco).child(g.name).update(
           g.gioco is BriscolaAChiamata
               ? g.gioco.asMapBriscolaAChiamata()
               : g.gioco.asMap());

@@ -62,6 +62,7 @@ class SelezionaGioco extends StatelessWidget {
       trailing: Icon(Icons.keyboard_arrow_right),
       onTap: () {
         onGiocoSelected(_giochi[index], context);
+        fbDh.getAllGiocatori();
       },
     );
   }
