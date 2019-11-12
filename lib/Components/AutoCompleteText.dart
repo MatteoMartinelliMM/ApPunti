@@ -11,6 +11,7 @@ class AutoCompleteText extends StatefulWidget implements UpdateSelectedList {
 
   List<Giocatore> giocatoriFromBe;
   List<Giocatore> selectedGiocatori;
+  FirebaseDatabaseHelper f;
 
   bool isEnable;
 
@@ -30,20 +31,30 @@ class AutoCompleteText extends StatefulWidget implements UpdateSelectedList {
 
 class AutoCompleteTextState extends State<AutoCompleteText> {
   GlobalKey<AutoCompleteTextFieldState<Giocatore>> key;
-  ObjectKey giocatoriKey;
+  ObjectKey giocatoriKey, giocatoriBEKey;
 
   @override
   Widget build(BuildContext context) {
     widget.selectedGiocatori = giocatoriKey.value;
-    if (widget.selectedGiocatori.isEmpty && widget.giocatoriFromBe.isEmpty) {
-      FirebaseDatabaseHelper f = new FirebaseDatabaseHelper();
-      f.getAllGiocatori().then((List<Giocatore> giocatori) {
-        setState(() {
-          widget.giocatoriFromBe = giocatori;
-        });
-      });
-      return getAutoComplete();
-    } else
+    widget.giocatoriFromBe = giocatoriBEKey.value;
+    if (widget.giocatoriFromBe == null || widget.giocatoriFromBe.isEmpty)
+      return FutureBuilder(
+        future: widget.f.getAllGiocatori(),
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.none:
+            case ConnectionState.waiting:
+            case ConnectionState.active:
+              return CircularProgressIndicator();
+            case ConnectionState.done:
+              widget.giocatoriFromBe = snapshot.data;
+              giocatoriBEKey = new ObjectKey(widget.giocatoriFromBe);
+              return getAutoComplete();
+          }
+          ;
+        },
+      );
+    else
       return getAutoComplete();
   }
 
@@ -54,13 +65,9 @@ class AutoCompleteTextState extends State<AutoCompleteText> {
       clearOnSubmit: true,
       itemBuilder: (context, item) {
         return ListTile(
-          leading: Container(
-            height: 50,
-            width: 50,
-            decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                image: DecorationImage(
-                    fit: BoxFit.fill, image: getUserImage(item))),
+          leading: ClipRRect(
+            borderRadius: BorderRadius.circular(25.0),
+            child: getUserImage(item),
           ),
           title: Text(item.name),
         );
@@ -85,11 +92,22 @@ class AutoCompleteTextState extends State<AutoCompleteText> {
     );
   }
 
-  ImageProvider getUserImage(Giocatore g) {
+  Widget getUserImage(Giocatore g) {
     return g?.url.isNotEmpty
-        ? NetworkImage(g.url)
-        : AssetImage(IMAGE_PATH + 'defuser.png') ??
-            AssetImage(IMAGE_PATH + 'defuser.png');
+        ? FadeInImage(
+            fit: BoxFit.fill,
+            height: 50,
+            width: 50,
+            placeholder: AssetImage(IMAGE_PATH + 'progress.gif'),
+            image: NetworkImage(g.url))
+        : Image.asset(
+              IMAGE_PATH + 'defuser.png',
+              height: 50,
+              width: 50,
+              fit: BoxFit.fill,
+            ) ??
+            Image.asset(IMAGE_PATH + 'defuser.png',
+                height: 50, width: 50, fit: BoxFit.fill);
   }
 
   void submitted(Giocatore g) {
@@ -105,7 +123,9 @@ class AutoCompleteTextState extends State<AutoCompleteText> {
     key = new GlobalKey();
     widget.selectedGiocatori = new List();
     widget.giocatoriFromBe = new List();
+    widget.f = new FirebaseDatabaseHelper();
     giocatoriKey = new ObjectKey(widget.selectedGiocatori);
+    giocatoriBEKey = new ObjectKey(widget.giocatoriFromBe);
   }
 }
 
