@@ -9,6 +9,11 @@ abstract class Gioco {
 
   int get partiteGiocate => _partiteGiocate;
 
+  Gioco.giocoForFb() {
+    _partiteGiocate = 0;
+    _partiteVinte = 0;
+  }
+
   Gioco.fromSnapshot(DataSnapshot datasnapshot) {
     _partiteGiocate = datasnapshot.value[PARTITE_GIOCATE];
     _partiteVinte = datasnapshot.value[PARTITE_VINTE];

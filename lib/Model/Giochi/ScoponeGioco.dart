@@ -11,6 +11,10 @@ class ScoponeGioco extends Gioco {
     _puntiFatti = datasnapshot.value[PUNTI_FATTI];
   }
 
+  ScoponeGioco.giocoForFb() : super.giocoForFb() {
+    _puntiFatti = 0;
+  }
+
   int get puntiFatti => _puntiFatti;
 
   set puntiFatti(int value) {

@@ -9,6 +9,10 @@ class Cirulla extends Gioco{
     _puntiFatti = datasnapshot.value[PUNTI_FATTI];
   }
 
+  Cirulla.giocoForFb() : super.giocoForFb() {
+    _puntiFatti = 0;
+  }
+
   int get puntiFatti => _puntiFatti;
 
   set puntiFatti(int value) {

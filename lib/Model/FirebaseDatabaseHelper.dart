@@ -15,16 +15,16 @@ import 'Giochi/Presidente.dart';
 import 'Giochi/ScoponeGioco.dart';
 
 class FirebaseDatabaseHelper {
-  final database = FirebaseDatabase.instance.setPersistenceEnabled(true);
-  final databaseReference = FirebaseDatabase.instance.reference();
+  final _database = FirebaseDatabase.instance.setPersistenceEnabled(true);
+  DatabaseReference _databaseReference = FirebaseDatabase.instance.reference();
 
   void createChild(int wo) {
     String title = "gesu" + wo.toString();
-    databaseReference.child("dio" + wo.toString()).set({'title': 'stronzo'});
+    _databaseReference.child("dio" + wo.toString()).set({'title': 'stronzo'});
   }
 
   Future<Gioco> getGiocoInfos(String gioco, String giocatore) async {
-    Gioco g = await databaseReference
+    Gioco g = await _databaseReference
         .child(GIOCHI)
         .child(gioco.toLowerCase().replaceAll(" ", ""))
         .child(giocatore)
@@ -61,7 +61,7 @@ class FirebaseDatabaseHelper {
   }
 
   Future<Giocatore> getGiocatore(String name, String gioco) async {
-    Giocatore g = await databaseReference
+    Giocatore g = await _databaseReference
         .child(UTENTI)
         .child(name)
         .once()
@@ -81,10 +81,13 @@ class FirebaseDatabaseHelper {
   }
 
   Future<List<Giocatore>> getAllGiocatori() async {
-    List<Giocatore> giocatori = await databaseReference.child(UTENTI).once().then((DataSnapshot snapshot){
+    List<Giocatore> giocatori = await _databaseReference
+        .child(UTENTI)
+        .once()
+        .then((DataSnapshot snapshot) {
       List<dynamic> keys = (snapshot.value as Map).keys.toList();
       List<Giocatore> giocatori = new List();
-      for(String k in keys){
+      for (String k in keys) {
         Giocatore g = Giocatore.fromMap(snapshot.value[k]);
         giocatori.add(g);
       }
@@ -95,10 +98,58 @@ class FirebaseDatabaseHelper {
 
   void updateGioco(List<Giocatore> giocatori, String gioco) {
     for (Giocatore g in giocatori) {
-      databaseReference..child(GIOCHI).child(gioco).child(g.name).update(
-          g.gioco is BriscolaAChiamata
-              ? g.gioco.asMapBriscolaAChiamata()
-              : g.gioco.asMap());
+      _databaseReference
+        ..child(GIOCHI).child(gioco).child(g.name).update(
+            g.gioco is BriscolaAChiamata
+                ? g.gioco.asMapBriscolaAChiamata()
+                : g.gioco.asMap());
     }
+  }
+
+  void createGiocatore(String name, String numero) {
+    List<String> giochi = new List();
+    giochi.add(SCOPA);
+    giochi.add(SCOPONE_SCIENTIFICO);
+    giochi.add(BRISCOLA);
+    giochi.add(BRISCOLA_A_CHIAMATA);
+    giochi.add(PRESIDENTE);
+    giochi.add(ASSE);
+    giochi.add(CIRULLA);
+    Giocatore g = Giocatore.newGiocatoreForFB(name, numero);
+    _databaseReference.child(UTENTI).child(name).set(g.giocatoreAsMap());
+    for (String g in giochi) {
+      Gioco gioco;
+      switch (g) {
+        case BRISCOLA:
+          gioco = Briscola.giocoForFb();
+          break;
+        case BRISCOLA_A_CHIAMATA:
+          gioco = BriscolaAChiamata.giocoForFb();
+          break;
+        case SCOPONE_SCIENTIFICO:
+          gioco = ScoponeGioco.giocoForFb();
+          break;
+        case SCOPA:
+          gioco = Scopa.giocoForFb();
+          break;
+        case CIRULLA:
+          gioco = Cirulla.giocoForFb();
+          break;
+        case ASSE:
+          gioco = Asse.giocoForFb();
+          break;
+        case PRESIDENTE:
+          gioco = Presidente.giocoForFb();
+          break;
+      }
+      _databaseReference
+          .child(GIOCHI)
+          .child(g.toLowerCase().replaceAll(" ", "").replaceAll("!", "").toLowerCase())
+          .child(name)
+          .set(gioco is BriscolaAChiamata
+              ? gioco.asMapBriscolaAChiamata()
+              : gioco.asMap());
+    }
+    _databaseReference = FirebaseDatabase.instance.reference();
   }
 }

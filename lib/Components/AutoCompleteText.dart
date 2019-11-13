@@ -8,7 +8,7 @@ import '../AggiungiGiocatori/AggiungiGiocatoriBriscolaAChiamata.dart';
 
 class AutoCompleteText extends StatefulWidget implements UpdateSelectedList {
   OnSubmitted onSubmitted;
-
+  OnNewGiocatore onNewGiocatore;
   List<Giocatore> giocatoriFromBe;
   List<Giocatore> selectedGiocatori;
   FirebaseDatabaseHelper f;
@@ -18,7 +18,7 @@ class AutoCompleteText extends StatefulWidget implements UpdateSelectedList {
   @override
   State<StatefulWidget> createState() => AutoCompleteTextState();
 
-  AutoCompleteText(this.onSubmitted, this.isEnable);
+  AutoCompleteText(this.onSubmitted, this.onNewGiocatore, this.isEnable);
 
   @override
   void updateGiocatore(Giocatore g, bool toAdd) {
@@ -63,6 +63,15 @@ class AutoCompleteTextState extends State<AutoCompleteText> {
       key: key,
       suggestions: widget.giocatoriFromBe,
       clearOnSubmit: true,
+      textSubmitted: (value) {
+        Giocatore giocatore = new Giocatore.newGiocatore(value);
+        if (!widget.giocatoriFromBe.contains(giocatore) &&
+            !widget.selectedGiocatori.contains(giocatore))
+          widget.onNewGiocatore(value);
+        else if (widget.giocatoriFromBe.contains(giocatore))
+          submitted(widget
+              .giocatoriFromBe[widget.giocatoriFromBe.indexOf(giocatore)]);
+      },
       itemBuilder: (context, item) {
         return ListTile(
           leading: ClipRRect(

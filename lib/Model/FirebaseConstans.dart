@@ -8,3 +8,5 @@ const UTENTI = 'Utenti';
 const NAME = 'name';
 const NUMERO = 'numero';
 const URL = 'url';
+
+const SCOPA_FB = 'scopa';

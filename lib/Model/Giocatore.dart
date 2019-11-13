@@ -36,4 +36,18 @@ class Giocatore {
     numero = datasnaphot[NUMERO].toString();
     url = datasnaphot[URL];
   }
+
+  Giocatore.newGiocatoreForFB(String name, String numero) {
+    this.name = name;
+    this.numero = numero;
+    url = '';
+  }
+
+  Map<String, String> giocatoreAsMap() {
+    Map<String, String> map = new Map();
+    map[NAME] = name;
+    map[NUMERO] = numero;
+    map[URL] = url;
+    return map;
+  }
 }

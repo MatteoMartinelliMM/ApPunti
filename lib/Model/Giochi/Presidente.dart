@@ -11,6 +11,10 @@ class Presidente extends Gioco {
     _schiavo = datasnapshot.value[SCHIAVO];
   }
 
+  Presidente.giocoForFb() : super.giocoForFb() {
+    _schiavo = 0;
+  }
+
   int get schiavo => _schiavo;
 
   set schiavo(int value) {

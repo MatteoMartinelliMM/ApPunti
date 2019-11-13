@@ -1,10 +1,14 @@
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter_app/Model/Giochi/Gioco.dart';
 
 import '../FirebaseConstans.dart';
-import 'package:flutter_app/Model/Giochi/Gioco.dart';
 
 class Scopa extends Gioco {
   int _puntiFatti;
+
+  Scopa.giocoForFb() : super.giocoForFb() {
+    _puntiFatti = 0;
+  }
 
   Scopa.fromSnapshot(DataSnapshot datasnapshot)
       : super.fromSnapshot(datasnapshot) {

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/Components/AggiungiGiocatoriDialog.dart';
 import 'package:flutter_app/Components/AvatarImage.dart';
 
-import 'BaseAggiungiGiocatori.dart';
 import '../Components/AutoCompleteText.dart';
-import '../Model/Constants.dart';
 import '../Model/Giocatore.dart';
+import 'BaseAggiungiGiocatori.dart';
 
 typedef OnSubmitted = void Function(Giocatore g);
+typedef OnNewGiocatore = void Function(String name);
 
 class AggiungiGiocatoriBriscolaAChiamata extends StatefulWidget
     implements BaseAggiungiGiocatori {
@@ -40,12 +41,16 @@ class AggiungiGiocatoriBriscolaAChiamataState
 
   OnSubmitted onSubmitted;
 
+  OnNewGiocatore onNewGiocatore;
+
   @override
   Widget build(BuildContext context) {
     widget.giocatoriGiocanti = key.value;
     bool isEnable = widget.giocatoriGiocanti.length < 5;
     onSubmitted = onDiocane;
-    AutoCompleteText autoCompleteText = AutoCompleteText(onSubmitted, isEnable);
+    onNewGiocatore = onNewPlayer;
+    AutoCompleteText autoCompleteText =
+        AutoCompleteText(onSubmitted, onNewGiocatore, isEnable);
     return Column(
       key: key,
       mainAxisSize: MainAxisSize.max,
@@ -149,6 +154,14 @@ class AggiungiGiocatoriBriscolaAChiamataState
       key = new ObjectKey(widget.giocatoriGiocanti);
       if (widget.canGoNext()) widget.toggleFab;
     });
+  }
+
+  onNewPlayer(String value) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return new AggiungiGiocatoriDialog(value);
+        });
   }
 
   @override

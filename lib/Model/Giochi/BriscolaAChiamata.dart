@@ -11,6 +11,10 @@ class BriscolaAChiamata extends Gioco {
     _puntiFatti = datasnapshot.value[PUNTI_FATTI];
   }
 
+  BriscolaAChiamata.giocoForFb() : super.giocoForFb() {
+    _puntiFatti = 0.0;
+  }
+
   double get puntiFatti => _puntiFatti;
 
   set puntiFatti(double value) {
@@ -19,8 +23,8 @@ class BriscolaAChiamata extends Gioco {
 
   Map<String, double> asMapBriscolaAChiamata() {
     Map<String, double> asMap = new Map();
-    asMap[PARTITE_GIOCATE] = partiteVinte as double;
-    asMap[PARTITE_VINTE] = partiteGiocate as double;
+    asMap[PARTITE_GIOCATE] = partiteGiocate.toDouble();
+    asMap[PARTITE_VINTE] = partiteVinte.toDouble();
     asMap[PUNTI_FATTI] = puntiFatti;
     return asMap;
   }
