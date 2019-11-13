@@ -10,13 +10,13 @@ class AvatartImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ClipRRect(
+    return ClipRRect(
         borderRadius: BorderRadius.circular(25.0),
         child: getUserImage(url, height, width));
   }
 
   Widget getUserImage(String url, double height, double width) {
-    return url?.isNotEmpty
+    return (url != null && url?.isNotEmpty)
         ? FadeInImage(
             fit: BoxFit.fill,
             height: height,
@@ -24,12 +24,10 @@ class AvatartImage extends StatelessWidget {
             placeholder: AssetImage(IMAGE_PATH + 'progress.gif'),
             image: NetworkImage(url))
         : Image.asset(
-              IMAGE_PATH + 'defuser.png',
-              height: 50,
-              width: 50,
-              fit: BoxFit.fill,
-            ) ??
-            Image.asset(IMAGE_PATH + 'defuser.png',
-                height: 50, width: 50, fit: BoxFit.fill);
+            IMAGE_PATH + 'defuser.png',
+            height: 50,
+            width: 50,
+            fit: BoxFit.fill,
+          );
   }
 }
