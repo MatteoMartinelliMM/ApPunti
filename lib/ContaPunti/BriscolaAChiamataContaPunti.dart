@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/Components/AvatarImage.dart';
 import 'package:flutter_app/Components/CounterLayout.dart';
 import 'package:flutter_app/ContaPunti/BaseContaPunti.dart';
 import 'package:flutter_app/Model/Constants.dart';
@@ -74,15 +75,7 @@ class BriscolaAChiamataState extends State<BriscolaAChiamataContaPunti> {
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.only(left: 8.0, right: 16.0),
-            child: Container(
-              width: 50,
-              height: 50,
-              decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: DecorationImage(
-                      fit: BoxFit.fill,
-                      image: AssetImage(IMAGE_PATH + 'scanse.jpg'))),
-            ),
+            child: AvatartImage(widget.giocatori[index].url, 50, 50),
           ),
           Center(
               child: Text(

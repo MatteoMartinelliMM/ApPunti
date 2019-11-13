@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/Components/AvatarImage.dart';
 import 'package:flutter_app/Components/CounterLayout.dart';
 import 'package:flutter_app/ContaPunti/BaseContaPunti.dart';
 import 'package:flutter_app/Model/FirebaseDatabaseHelper.dart';
@@ -88,9 +89,9 @@ class PresidenteContaPuntiState extends State<PresidenteContaPunti> {
             child: Text("Salva"),
             onPressed: widget.enable
                 ? () {
-              setState(() {
-                widget.callbackDialog();
-              });
+                    setState(() {
+                      widget.callbackDialog();
+                    });
                   }
                 : null,
           ),
@@ -111,15 +112,7 @@ class PresidenteContaPuntiState extends State<PresidenteContaPunti> {
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                          fit: BoxFit.fill,
-                          image: AssetImage(IMAGE_PATH + 'vale.jpg'))),
-                ),
+                child: AvatartImage(widget.giocatori[index].url, 50, 50),
               ),
               Center(
                 child: Padding(

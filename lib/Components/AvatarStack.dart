@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/Components/AvatarImage.dart';
 
 class stackavatar extends StatelessWidget {
   List<String> imageName;
@@ -10,23 +11,11 @@ class stackavatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      fit: StackFit.loose,
-      children: getAvatars()
-    );
+    return Stack(fit: StackFit.loose, children: getAvatars());
   }
 
-  Container buildSingleAvatar(String imageName) {
-    return Container(
-      height: 80,
-      width: 80,
-      decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          image: DecorationImage(
-              fit: BoxFit.fill,
-              image: AssetImage(
-                  imageName))),
-    );
+  Widget buildSingleAvatar(String imageName) {
+    return AvatartImage(imageName, 80, 80);
   }
 
   List<Widget> getAvatars() {
@@ -40,8 +29,7 @@ class stackavatar extends StatelessWidget {
             padding: EdgeInsets.only(left: paddingOffset * i),
             child: Align(
                 alignment: Alignment.centerRight,
-                child:
-                buildSingleAvatar(imageName[i])));
+                child: buildSingleAvatar(imageName[i])));
       }
       avarList.add(avatar);
     }

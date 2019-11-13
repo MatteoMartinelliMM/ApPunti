@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/Components/AvatarImage.dart';
 
 import 'BaseAggiungiGiocatori.dart';
 import '../Components/AutoCompleteText.dart';
@@ -114,15 +115,8 @@ class AggiungiGiocatoriBriscolaAChiamataState
                       });
                     },
                     child: ListTile(
-                      leading: Container(
-                        width: 60,
-                        height: 60,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                                fit: BoxFit.fill,
-                                image: AssetImage(IMAGE_PATH + 'defuser.png'))),
-                      ),
+                      leading: AvatartImage(
+                          widget.giocatoriGiocanti[index].url, 60, 60),
                       title: Text(widget.giocatoriGiocanti[index].name),
                       subtitle: Text(
                           widget.giocatoriGiocanti[index].points.toString()),

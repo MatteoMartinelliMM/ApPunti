@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart' as prefix0;
 import 'package:flutter/services.dart';
+import 'package:flutter_app/Components/AvatarImage.dart';
 import 'package:flutter_app/Model/Constants.dart';
 import 'package:flutter_app/Model/FirebaseDatabaseHelper.dart';
 import 'package:flutter_app/Model/Giocatore.dart';
@@ -213,15 +214,9 @@ class ScoponeState extends State<Scopone> {
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         Padding(
-            padding: EdgeInsets.only(left: 8.0, top: 8.0, right: 8.0),
-            child: Container(
-              width: 80,
-              height: 80,
-              decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: DecorationImage(
-                      fit: BoxFit.fill, image: getImage(giocatore.url))),
-            )),
+          padding: EdgeInsets.only(left: 8.0, top: 8.0, right: 8.0),
+          child: AvatartImage(giocatore.url, 80, 80),
+        ),
         Expanded(
           child: Padding(
               padding: EdgeInsets.only(right: 8.0),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/Components/AvatarImage.dart';
 import 'package:flutter_app/Components/CounterLayout.dart';
 import 'package:flutter_app/ContaPunti/BaseContaPunti.dart';
 import 'package:flutter_app/Model/Constants.dart';
@@ -83,15 +84,10 @@ class ScopaContaPuntiState extends State<ScopaContaPunti> {
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    width: 80,
-                    height: 80,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                            fit: BoxFit.fill,
-                            image: AssetImage(IMAGE_PATH + 'scanse.jpg'))),
-                  ),
+                  child: AvatartImage(
+                      widget.giocatori[widget.giocatori.indexOf(g)].url,
+                      80,
+                      80),
                 ),
                 Spacer(),
                 Padding(
