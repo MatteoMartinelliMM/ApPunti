@@ -18,6 +18,7 @@ class Scopone extends StatefulWidget implements BaseAggiungiGiocatori {
   List<Giocatore> giocatori;
   List<TextEditingController> controllerList;
   List<FocusNode> focusNodeList;
+  List<bool> valids;
   BuildContext context;
   FirebaseDatabaseHelper fDbH;
 
@@ -49,7 +50,7 @@ class ScoponeState extends State<Scopone> {
   List<TextEditingController> controllerList;
   List<FocusNode> focusNodeList;
   BuildContext context;
-  ObjectKey boolKey;
+  ObjectKey boolKey, validKey;
 
   ScoponeState(
       this.giocatori, this.controllerList, this.focusNodeList, this.context);
@@ -57,7 +58,12 @@ class ScoponeState extends State<Scopone> {
   @override
   void initState() {
     widget.isLoading = new List();
-    for (Giocatore g in widget.giocatori) widget.isLoading.add(false);
+    widget.valids = new List();
+    for (Giocatore g in widget.giocatori) {
+      widget.valids.add(true);
+      widget.isLoading.add(false);
+    }
+    validKey = new ObjectKey(widget.valids);
     boolKey = new ObjectKey(widget.isLoading);
   }
 
@@ -230,10 +236,17 @@ class ScoponeState extends State<Scopone> {
                       .getGiocatore(value, SCOPONE_SCIENTIFICO)
                       .then((Giocatore g) {
                     setState(() {
-                      widget.isLoading[indexGiocatore] = g == null;
-                      if (g != null) {
+                      widget.isLoading[indexGiocatore] = false;
+                      if (g != null && !widget.giocatori.contains(g)) {
+                        widget.isLoading[indexGiocatore] = true;
                         widget.giocatori[indexGiocatore] = g;
                         controller.text = g.name;
+                      } else if (g != null && widget.giocatori.contains(g)) {
+                        widget.valids[indexGiocatore] = false;
+                        controller.text = g.name;
+                      } else {
+                        widget.isLoading[indexGiocatore] = true;
+                        //TODO SHOW DIALOG
                       }
                       if (focusNodeList.length - 1 != indexGiocatore)
                         FocusScope.of(context)
@@ -249,7 +262,10 @@ class ScoponeState extends State<Scopone> {
                     }*/
                 },
                 decoration: InputDecoration(
-                    border: OutlineInputBorder(),
+                    border: OutlineInputBorder(
+                        borderSide: widget.valids[indexGiocatore]
+                            ? BorderSide()
+                            : BorderSide(color: Colors.red)),
                     hintText: "Inserisci giocatore"),
               )),
         )

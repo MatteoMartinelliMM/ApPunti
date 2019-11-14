@@ -66,7 +66,7 @@ class FirebaseDatabaseHelper {
         .child(name)
         .once()
         .then((DataSnapshot datasnaphot) async {
-      if (datasnaphot.value[NAME] != null) {
+      if (datasnaphot.value !=null && datasnaphot.value[NAME] != null) {
         Giocatore giocatore = Giocatore.fromSnapshot(datasnaphot);
         if (gioco != null) {
           Gioco g = await getGiocoInfos(gioco, name);
