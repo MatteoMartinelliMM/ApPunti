@@ -66,7 +66,7 @@ class FirebaseDatabaseHelper {
         .child(name)
         .once()
         .then((DataSnapshot datasnaphot) async {
-      if (datasnaphot.value !=null && datasnaphot.value[NAME] != null) {
+      if (datasnaphot.value != null && datasnaphot.value[NAME] != null) {
         Giocatore giocatore = Giocatore.fromSnapshot(datasnaphot);
         if (gioco != null) {
           Gioco g = await getGiocoInfos(gioco, name);
@@ -117,7 +117,9 @@ class FirebaseDatabaseHelper {
     giochi.add(CIRULLA);
     Giocatore g = Giocatore.newGiocatoreForFB(name, numero);
     _databaseReference.child(UTENTI).child(name).set(g.giocatoreAsMap());
+    int count = 0;
     for (String g in giochi) {
+      count++;
       Gioco gioco;
       switch (g) {
         case BRISCOLA:
@@ -144,12 +146,19 @@ class FirebaseDatabaseHelper {
       }
       _databaseReference
           .child(GIOCHI)
-          .child(g.toLowerCase().replaceAll(" ", "").replaceAll("!", "").toLowerCase())
+          .child(g
+              .toLowerCase()
+              .replaceAll(" ", "")
+              .replaceAll("!", "")
+              .toLowerCase())
           .child(name)
           .set(gioco is BriscolaAChiamata
               ? gioco.asMapBriscolaAChiamata()
-              : gioco.asMap());
+              : gioco.asMap())
+          .then((value) {
+        if (count >= giochi.length - 1)
+          _databaseReference = FirebaseDatabase.instance.reference();
+      });
     }
-    _databaseReference = FirebaseDatabase.instance.reference();
   }
 }

@@ -1,8 +1,8 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart' as prefix0;
 import 'package:flutter/services.dart';
+import 'package:flutter_app/Components/AggiungiGiocatoriDialog.dart';
 import 'package:flutter_app/Components/AvatarImage.dart';
 import 'package:flutter_app/Model/Constants.dart';
 import 'package:flutter_app/Model/FirebaseDatabaseHelper.dart';
@@ -14,6 +14,8 @@ import 'BaseAggiungiGiocatori.dart';
 List<FocusNode> focuseNodeList;
 List<TextEditingController> controllerList;
 
+typedef OnNewGiocatore = void Function(String name);
+
 class Scopone extends StatefulWidget implements BaseAggiungiGiocatori {
   List<Giocatore> giocatori;
   List<TextEditingController> controllerList;
@@ -21,7 +23,7 @@ class Scopone extends StatefulWidget implements BaseAggiungiGiocatori {
   List<bool> valids;
   BuildContext context;
   FirebaseDatabaseHelper fDbH;
-
+  OnNewGiocatore onNewGiocatore;
   List<bool> isLoading;
 
   Scopone(
@@ -65,6 +67,7 @@ class ScoponeState extends State<Scopone> {
     }
     validKey = new ObjectKey(widget.valids);
     boolKey = new ObjectKey(widget.isLoading);
+    widget.onNewGiocatore = onNewPlayer;
   }
 
   @override
@@ -236,6 +239,7 @@ class ScoponeState extends State<Scopone> {
                       .getGiocatore(value, SCOPONE_SCIENTIFICO)
                       .then((Giocatore g) {
                     setState(() {
+                      widget.isLoading[indexGiocatore] = true;
                       widget.isLoading[indexGiocatore] = false;
                       if (g != null && !widget.giocatori.contains(g)) {
                         widget.isLoading[indexGiocatore] = true;
@@ -245,8 +249,8 @@ class ScoponeState extends State<Scopone> {
                         widget.valids[indexGiocatore] = false;
                         controller.text = g.name;
                       } else {
-                        widget.isLoading[indexGiocatore] = true;
-                        //TODO SHOW DIALOG
+                        widget.onNewGiocatore(value);
+
                       }
                       if (focusNodeList.length - 1 != indexGiocatore)
                         FocusScope.of(context)
@@ -319,6 +323,14 @@ class ScoponeState extends State<Scopone> {
       widgetList.add(tabellaPunteggi(giocatore));
     }
     return widgetList;
+  }
+
+  onNewPlayer(String value) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return new AggiungiGiocatoriDialog(value);
+        });
   }
 
   String getPercentage(Giocatore giocatore) {
