@@ -26,8 +26,8 @@ class Scopone extends StatefulWidget implements BaseAggiungiGiocatori {
   OnNewGiocatore onNewGiocatore;
   List<bool> isLoading;
 
-  Scopone(
-      this.giocatori, this.controllerList, this.focusNodeList, this.context) {
+  Scopone(this.giocatori, this.controllerList, this.focusNodeList, this.context,
+      this.onNewGiocatore) {
     fDbH = new FirebaseDatabaseHelper();
   }
 
@@ -67,7 +67,6 @@ class ScoponeState extends State<Scopone> {
     }
     validKey = new ObjectKey(widget.valids);
     boolKey = new ObjectKey(widget.isLoading);
-    widget.onNewGiocatore = onNewPlayer;
   }
 
   @override
@@ -224,7 +223,7 @@ class ScoponeState extends State<Scopone> {
       children: <Widget>[
         Padding(
           padding: EdgeInsets.only(left: 8.0, top: 8.0, right: 8.0),
-          child: AvatartImage(giocatore.url, 80, 80),
+          child: AvatarImage(giocatore.url, 80, 80),
         ),
         Expanded(
           child: Padding(
@@ -250,7 +249,6 @@ class ScoponeState extends State<Scopone> {
                         controller.text = g.name;
                       } else {
                         widget.onNewGiocatore(value);
-
                       }
                       if (focusNodeList.length - 1 != indexGiocatore)
                         FocusScope.of(context)
@@ -323,14 +321,6 @@ class ScoponeState extends State<Scopone> {
       widgetList.add(tabellaPunteggi(giocatore));
     }
     return widgetList;
-  }
-
-  onNewPlayer(String value) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return new AggiungiGiocatoriDialog(value);
-        });
   }
 
   String getPercentage(Giocatore giocatore) {

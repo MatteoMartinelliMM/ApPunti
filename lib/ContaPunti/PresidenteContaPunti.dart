@@ -112,7 +112,7 @@ class PresidenteContaPuntiState extends State<PresidenteContaPunti> {
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: AvatartImage(widget.giocatori[index].url, 50, 50),
+                child: AvatarImage(widget.giocatori[index].url, 50, 50),
               ),
               Center(
                 child: Padding(

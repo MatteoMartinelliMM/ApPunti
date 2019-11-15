@@ -11,10 +11,9 @@ class AggiungiGiocatoriDialog extends StatefulWidget {
   FocusNode focusNode;
   FirebaseDatabaseHelper fbdh;
 
-  AggiungiGiocatoriDialog(this.name){
+  AggiungiGiocatoriDialog(this.name) {
     focusNode = new FocusNode();
     fbdh = new FirebaseDatabaseHelper();
-
   }
 
   @override
@@ -24,7 +23,7 @@ class AggiungiGiocatoriDialog extends StatefulWidget {
 }
 
 class AggiungiGiocatoriDialogState extends State<AggiungiGiocatoriDialog> {
-  ObjectKey etCListKey, fbdhKey,nameKey,focusNodeKey;
+  ObjectKey etCListKey, fbdhKey, nameKey, focusNodeKey;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +36,7 @@ class AggiungiGiocatoriDialogState extends State<AggiungiGiocatoriDialog> {
           padding: const EdgeInsets.only(top: 8.0),
           child: Align(
             alignment: Alignment.topCenter,
-            child: AvatartImage(null, 100, 100),
+            child: AvatarImage(null, 100, 100),
           ),
         ),
         Padding(

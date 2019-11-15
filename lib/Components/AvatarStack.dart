@@ -15,7 +15,7 @@ class stackavatar extends StatelessWidget {
   }
 
   Widget buildSingleAvatar(String imageName) {
-    return AvatartImage(imageName, 80, 80);
+    return AvatarImage(imageName, 80, 80);
   }
 
   List<Widget> getAvatars() {

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/AggiungiGiocatori/AggiungiGiocatoriScopone.dart';
+import 'package:flutter_app/Components/AggiungiGiocatoriDialog.dart';
 import 'package:flutter_app/Model/Constants.dart';
 
 import '../ContaPunti/contapunti.dart';
@@ -9,6 +10,8 @@ import 'AggiungiGiocatoriBriscolaAChiamata.dart';
 import 'AggiungiGiocatoriPresidente.dart';
 import 'AggiungiGiocatoriScopa.dart';
 import 'BaseAggiungiGiocatori.dart';
+
+typedef OnNewGiocatore = void Function(String name);
 
 class SelezionaGiocatori extends StatefulWidget {
   String gioco;
@@ -33,11 +36,13 @@ class SelezionaGiocatoriState extends State<SelezionaGiocatori> {
   String gioco;
   Widget aggiungiGiocatoriBody;
   ObjectKey key;
+  OnNewGiocatore onNewGiocatore;
 
   SelezionaGiocatoriState(this.gioco);
 
   @override
   void initState() {
+    onNewGiocatore = onNewPlayer;
     switch (gioco) {
       case BRISCOLA:
       case SCOPA:
@@ -45,7 +50,7 @@ class SelezionaGiocatoriState extends State<SelezionaGiocatori> {
         aggiungiGiocatoriBody =
             new AggiungiGiocatoriScopa(giocatori, gioco, () {
           onMinimumGiocatoriReached();
-        });
+        }, onNewGiocatore);
         break;
       case SCOPONE_SCIENTIFICO:
         giocatori = new List(4);
@@ -55,13 +60,13 @@ class SelezionaGiocatoriState extends State<SelezionaGiocatori> {
           controllerList.add(new TextEditingController());
           focusNodeList.add(new FocusNode());
         }
-        aggiungiGiocatoriBody =
-            new Scopone(giocatori, controllerList, focusNodeList, context);
+        aggiungiGiocatoriBody = new Scopone(
+            giocatori, controllerList, focusNodeList, context, onNewGiocatore);
         break;
       case BRISCOLA_A_CHIAMATA:
         aggiungiGiocatoriBody = AggiungiGiocatoriBriscolaAChiamata(() {
           onMinimumGiocatoriReached();
-        });
+        }, onNewGiocatore);
         break;
       case PRESIDENTE:
       case ASSE:
@@ -69,7 +74,7 @@ class SelezionaGiocatoriState extends State<SelezionaGiocatori> {
         aggiungiGiocatoriBody =
             new AggiungiGiocatoriPresidente(giocatori, gioco, () {
           onMinimumGiocatoriReached();
-        });
+        },onNewGiocatore);
         break;
     }
     widget.baseAggiungiGiocatori =
@@ -103,5 +108,13 @@ class SelezionaGiocatoriState extends State<SelezionaGiocatori> {
 
   VoidCallback onMinimumGiocatoriReached() {
     setState(() {});
+  }
+
+  onNewPlayer(String value) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return new AggiungiGiocatoriDialog(value);
+        });
   }
 }

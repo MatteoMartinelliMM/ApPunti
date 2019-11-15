@@ -75,7 +75,7 @@ class BriscolaAChiamataState extends State<BriscolaAChiamataContaPunti> {
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.only(left: 8.0, right: 16.0),
-            child: AvatartImage(widget.giocatori[index].url, 50, 50),
+            child: AvatarImage(widget.giocatori[index].url, 50, 50),
           ),
           Center(
               child: Text(

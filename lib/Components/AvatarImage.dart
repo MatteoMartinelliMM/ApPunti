@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Model/Constants.dart';
 
-class AvatartImage extends StatelessWidget {
+class AvatarImage extends StatelessWidget {
   String url;
 
   double height, width;
 
-  AvatartImage(this.url, this.width, this.height);
+  AvatarImage(this.url, this.width, this.height);
 
   @override
   Widget build(BuildContext context) {

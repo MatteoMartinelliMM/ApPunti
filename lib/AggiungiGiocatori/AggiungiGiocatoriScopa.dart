@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_app/AggiungiGiocatori/aggiungigiocatori.dart';
 import 'package:flutter_app/Components/AvatarImage.dart';
 import 'package:flutter_app/ContaPunti/contapunti.dart';
 import 'package:flutter_app/Model/Constants.dart';
@@ -18,7 +19,9 @@ class AggiungiGiocatoriScopa extends StatefulWidget
   List<TextEditingController> etCList;
   List<FocusNode> mFocusList;
 
-  AggiungiGiocatoriScopa(this.giocatori, this.gioco, this.callback);
+  OnNewGiocatore onNewGiocatore;
+
+  AggiungiGiocatoriScopa(this.giocatori, this.gioco, this.callback, this.onNewGiocatore);
 
   @override
   State<StatefulWidget> createState() {
@@ -209,7 +212,7 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
                           Align(
                             alignment: Alignment.topCenter,
                             child:
-                                AvatartImage(widget.giocatori[0].url, 80, 80),
+                                AvatarImage(widget.giocatori[0].url, 80, 80),
                           ),
                           playerTextFiled(0),
                         ],
@@ -229,7 +232,7 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
                           Align(
                             alignment: Alignment.topCenter,
                             child:
-                                AvatartImage(widget.giocatori[1].url, 80, 80),
+                                AvatarImage(widget.giocatori[1].url, 80, 80),
                           ),
                           playerTextFiled(1),
                         ],
@@ -261,7 +264,7 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
                           Align(
                             alignment: Alignment.topCenter,
                             child:
-                                AvatartImage(widget.giocatori[2].url, 80, 80),
+                                AvatarImage(widget.giocatori[2].url, 80, 80),
                           ),
                           playerTextFiled(2),
                         ],
@@ -299,7 +302,7 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
                       children: <Widget>[
                         Padding(
                           padding: const EdgeInsets.only(right: 8.0),
-                          child: AvatartImage(widget.giocatori[0].url, 80, 80),
+                          child: AvatarImage(widget.giocatori[0].url, 80, 80),
                         ),
                         Expanded(
                           child: playerTextFiled(0),
@@ -325,7 +328,7 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
                       children: <Widget>[
                         Padding(
                           padding: const EdgeInsets.only(right: 8.0),
-                          child: AvatartImage(widget.giocatori[1].url, 80, 80),
+                          child: AvatarImage(widget.giocatori[1].url, 80, 80),
                         ),
                         Expanded(child: playerTextFiled(1))
                       ],
@@ -390,7 +393,7 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
       children: <Widget>[
         Padding(
             padding: EdgeInsets.only(left: 8.0),
-            child: AvatartImage(widget.giocatori[indexGiocatore].url, 80, 80)),
+            child: AvatarImage(widget.giocatori[indexGiocatore].url, 80, 80)),
         Expanded(
           child: Padding(
               padding: EdgeInsets.only(right: 8.0),

@@ -84,7 +84,7 @@ class ScopaContaPuntiState extends State<ScopaContaPunti> {
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: AvatartImage(
+                  child: AvatarImage(
                       widget.giocatori[widget.giocatori.indexOf(g)].url,
                       80,
                       80),

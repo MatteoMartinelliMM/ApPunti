@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/AggiungiGiocatori/aggiungigiocatori.dart';
 import 'package:flutter_app/Components/AggiungiGiocatoriDialog.dart';
 import 'package:flutter_app/Components/AvatarImage.dart';
 
@@ -7,7 +8,6 @@ import '../Model/Giocatore.dart';
 import 'BaseAggiungiGiocatori.dart';
 
 typedef OnSubmitted = void Function(Giocatore g);
-typedef OnNewGiocatore = void Function(String name);
 
 class AggiungiGiocatoriBriscolaAChiamata extends StatefulWidget
     implements BaseAggiungiGiocatori {
@@ -15,7 +15,9 @@ class AggiungiGiocatoriBriscolaAChiamata extends StatefulWidget
 
   VoidCallback toggleFab;
 
-  AggiungiGiocatoriBriscolaAChiamata(this.toggleFab);
+  OnNewGiocatore onNewGiocatore;
+
+  AggiungiGiocatoriBriscolaAChiamata(this.toggleFab, this.onNewGiocatore);
 
   @override
   State<StatefulWidget> createState() {
@@ -41,16 +43,13 @@ class AggiungiGiocatoriBriscolaAChiamataState
 
   OnSubmitted onSubmitted;
 
-  OnNewGiocatore onNewGiocatore;
-
   @override
   Widget build(BuildContext context) {
     widget.giocatoriGiocanti = key.value;
     bool isEnable = widget.giocatoriGiocanti.length < 5;
-    onSubmitted = onDiocane;
-    onNewGiocatore = onNewPlayer;
+    onSubmitted = onGiocatoreSubmitted;
     AutoCompleteText autoCompleteText =
-        AutoCompleteText(onSubmitted, onNewGiocatore, isEnable);
+        AutoCompleteText(onSubmitted, widget.onNewGiocatore, isEnable);
     return Column(
       key: key,
       mainAxisSize: MainAxisSize.max,
@@ -120,7 +119,7 @@ class AggiungiGiocatoriBriscolaAChiamataState
                       });
                     },
                     child: ListTile(
-                      leading: AvatartImage(
+                      leading: AvatarImage(
                           widget.giocatoriGiocanti[index].url, 60, 60),
                       title: Text(widget.giocatoriGiocanti[index].name),
                       subtitle: Text(
@@ -148,7 +147,7 @@ class AggiungiGiocatoriBriscolaAChiamataState
     );
   }
 
-  onDiocane(Giocatore g) {
+  onGiocatoreSubmitted(Giocatore g) {
     setState(() {
       widget.giocatoriGiocanti.add(g);
       key = new ObjectKey(widget.giocatoriGiocanti);
@@ -156,13 +155,6 @@ class AggiungiGiocatoriBriscolaAChiamataState
     });
   }
 
-  onNewPlayer(String value) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return new AggiungiGiocatoriDialog(value);
-        });
-  }
 
   @override
   void initState() {
