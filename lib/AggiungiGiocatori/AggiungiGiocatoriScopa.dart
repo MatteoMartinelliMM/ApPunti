@@ -4,6 +4,7 @@ import 'package:flutter_app/AggiungiGiocatori/aggiungigiocatori.dart';
 import 'package:flutter_app/Components/AvatarImage.dart';
 import 'package:flutter_app/ContaPunti/contapunti.dart';
 import 'package:flutter_app/Model/Constants.dart';
+import 'package:flutter_app/Model/FirebaseDatabaseHelper.dart';
 import 'package:flutter_app/Model/Giocatore.dart';
 
 import 'BaseAggiungiGiocatori.dart';
@@ -17,11 +18,18 @@ class AggiungiGiocatoriScopa extends StatefulWidget
   List<String> nrOfPlayer;
 
   List<TextEditingController> etCList;
+  List<bool> isLoading;
+  List<bool> valids;
   List<FocusNode> mFocusList;
 
   OnNewGiocatore onNewGiocatore;
 
-  AggiungiGiocatoriScopa(this.giocatori, this.gioco, this.callback, this.onNewGiocatore);
+  FirebaseDatabaseHelper fDbH;
+
+  AggiungiGiocatoriScopa(
+      this.giocatori, this.gioco, this.callback, this.onNewGiocatore) {
+    fDbH = new FirebaseDatabaseHelper();
+  }
 
   @override
   State<StatefulWidget> createState() {
@@ -56,6 +64,8 @@ class AggiungiGiocatoriScopa extends StatefulWidget
 }
 
 class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
+  ObjectKey boolKey, validKey;
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -98,10 +108,10 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
     widget.nrOfPlayer = new List();
     widget.nrOfPlayer.add(DUO);
     widget.nrOfPlayer.add(TLE);
-    if (widget.gioco != CIRULLA) {
-      widget.nrOfPlayer.add(QUATLO);
-    }
+    if (widget.gioco != CIRULLA) widget.nrOfPlayer.add(QUATLO);
     widget.howmanyPlayer = widget.nrOfPlayer[0];
+    validKey = new ObjectKey(widget.valids);
+    boolKey = new ObjectKey(widget.isLoading);
   }
 
   Widget getBody() {
@@ -110,6 +120,8 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
         widget.giocatori = widget.giocatori?.sublist(0, 2) ?? new List(2);
         widget.etCList = widget.etCList?.sublist(0, 2) ?? new List(2);
         widget.mFocusList = widget.mFocusList?.sublist(0, 2) ?? new List(2);
+        widget.isLoading = widget.isLoading?.sublist(0, 2) ?? new List(2);
+        widget.valids = widget.valids?.sublist(0, 2) ?? new List(2);
         for (int i = 0; i < 2; i++) {
           if (widget.etCList[i] == null)
             widget.etCList[i] = new TextEditingController();
@@ -118,6 +130,8 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
           if (widget.mFocusList[i] == null)
             widget.mFocusList[i] = new FocusNode();
           widget.etCList[i].text = widget.giocatori[i]?.name ?? '';
+          widget.isLoading[i] = false;
+          widget.valids[i] = true;
         }
         return duo();
       case TLE:
@@ -145,10 +159,18 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
       List<FocusNode> tempListFoc = widget.mFocusList.sublist(0, toKeep - 1);
       tempListFoc.add(new FocusNode());
       widget.mFocusList = tempListFoc;
+      List<bool> tempValid = widget.valids.sublist(0, toKeep - 1);
+      tempValid.add(true);
+      widget.valids = tempValid;
+      List<bool> tempIsLoading = widget.isLoading.sublist(0, toKeep - 1);
+      tempIsLoading.add(false);
+      widget.isLoading = tempIsLoading;
     } else {
       widget.giocatori = widget.giocatori.sublist(0, toKeep);
       widget.etCList = widget.etCList.sublist(0, toKeep);
       widget.mFocusList = widget.mFocusList.sublist(0, toKeep);
+      widget.valids = widget.valids.sublist(0, toKeep);
+      widget.isLoading = widget.isLoading.sublist(0, toKeep);
     }
   }
 
@@ -209,10 +231,13 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
-                          Align(
-                            alignment: Alignment.topCenter,
-                            child:
-                                AvatarImage(widget.giocatori[0].url, 80, 80),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 8.0),
+                            child: Align(
+                              alignment: Alignment.topCenter,
+                              child:
+                                  AvatarImage(widget.giocatori[0].url, 80, 80),
+                            ),
                           ),
                           playerTextFiled(0),
                         ],
@@ -231,8 +256,7 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
                         children: <Widget>[
                           Align(
                             alignment: Alignment.topCenter,
-                            child:
-                                AvatarImage(widget.giocatori[1].url, 80, 80),
+                            child: AvatarImage(widget.giocatori[1].url, 80, 80),
                           ),
                           playerTextFiled(1),
                         ],
@@ -263,8 +287,7 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
                         children: <Widget>[
                           Align(
                             alignment: Alignment.topCenter,
-                            child:
-                                AvatarImage(widget.giocatori[2].url, 80, 80),
+                            child: AvatarImage(widget.giocatori[2].url, 80, 80),
                           ),
                           playerTextFiled(2),
                         ],
@@ -350,15 +373,29 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
           ? TextInputAction.next
           : TextInputAction.done,
       controller: widget.etCList[i],
+      textCapitalization: TextCapitalization.words,
       onSubmitted: (value) {
-        setState(() {
-          if (widget.mFocusList.length - 1 > i)
-            FocusScope.of(context).requestFocus(widget.mFocusList[i + 1]);
-          else
-            SystemChannels.textInput.invokeMethod('TextInput.hide');
-          widget.etCList[i].text = value;
-          widget.giocatori[i].name = value;
-          widget.callback;
+        widget.fDbH
+            .getGiocatore(value, widget.gioco)
+            .then((Giocatore g) {
+          setState(() {
+            widget.isLoading[i] = true;
+            widget.isLoading[i] = false;
+            if (g != null && !widget.giocatori.contains(g)) {
+              widget.isLoading[i] = true;
+              widget.giocatori[i] = g;
+              widget.etCList[i].text = g.name;
+            } else if (g != null && widget.giocatori.contains(g)) {
+              widget.valids[i] = false;
+              widget.etCList[i].text = g.name;
+            } else {
+              widget.onNewGiocatore(value);
+            }
+            if (widget.mFocusList.length - 1 != i)
+              FocusScope.of(context).requestFocus(widget.mFocusList[i + 1]);
+            else
+              SystemChannels.textInput.invokeMethod('TextInput.hide');
+          });
         });
       },
       decoration: InputDecoration(

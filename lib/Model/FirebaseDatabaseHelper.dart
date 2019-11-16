@@ -16,17 +16,21 @@ import 'Giochi/ScoponeGioco.dart';
 
 class FirebaseDatabaseHelper {
   final _database = FirebaseDatabase.instance.setPersistenceEnabled(true);
-  DatabaseReference _databaseReference = FirebaseDatabase.instance.reference();
+  DatabaseReference _databaseReference;
 
   void createChild(int wo) {
     String title = "gesu" + wo.toString();
     _databaseReference.child("dio" + wo.toString()).set({'title': 'stronzo'});
   }
 
+  FirebaseDatabaseHelper() {
+    _databaseReference = FirebaseDatabase.instance.reference();
+  }
+
   Future<Gioco> getGiocoInfos(String gioco, String giocatore) async {
     Gioco g = await _databaseReference
         .child(GIOCHI)
-        .child(gioco.toLowerCase().replaceAll(" ", ""))
+        .child(formatGiocoForFirebase(gioco))
         .child(giocatore)
         .once()
         .then((DataSnapshot datasnaphot) {
@@ -99,7 +103,7 @@ class FirebaseDatabaseHelper {
   void updateGioco(List<Giocatore> giocatori, String gioco) {
     for (Giocatore g in giocatori) {
       _databaseReference
-        ..child(GIOCHI).child(gioco).child(g.name).update(
+        ..child(GIOCHI).child(formatGiocoForFirebase(gioco)).child(g.name).update(
             g.gioco is BriscolaAChiamata
                 ? g.gioco.asMapBriscolaAChiamata()
                 : g.gioco.asMap());
@@ -146,11 +150,7 @@ class FirebaseDatabaseHelper {
       }
       _databaseReference
           .child(GIOCHI)
-          .child(g
-              .toLowerCase()
-              .replaceAll(" ", "")
-              .replaceAll("!", "")
-              .toLowerCase())
+          .child(formatGiocoForFirebase(g))
           .child(name)
           .set(gioco is BriscolaAChiamata
               ? gioco.asMapBriscolaAChiamata()
@@ -160,5 +160,13 @@ class FirebaseDatabaseHelper {
           _databaseReference = FirebaseDatabase.instance.reference();
       });
     }
+  }
+
+  String formatGiocoForFirebase(String g) {
+    return g
+            .toLowerCase()
+            .replaceAll(" ", "")
+            .replaceAll("!", "")
+            .toLowerCase();
   }
 }

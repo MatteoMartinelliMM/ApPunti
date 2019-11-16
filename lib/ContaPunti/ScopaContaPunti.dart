@@ -5,6 +5,7 @@ import 'package:flutter_app/ContaPunti/BaseContaPunti.dart';
 import 'package:flutter_app/Model/Constants.dart';
 import 'package:flutter_app/Model/FirebaseDatabaseHelper.dart';
 import 'package:flutter_app/Model/Giocatore.dart';
+import 'package:flutter_app/Model/Giochi/Cirulla.dart';
 import 'package:flutter_app/Model/Giochi/Scopa.dart';
 
 class ScopaContaPunti extends StatefulWidget implements BaseContaPunti {
@@ -58,9 +59,18 @@ class ScopaContaPunti extends StatefulWidget implements BaseContaPunti {
   void updatePartita() {
     List<int> ordered = new List();
     ordered = counters;
-    ordered.sort();
+    ordered.sort((a, b) => b.compareTo(a));
     for (Giocatore g in giocatori) {
-      (g.gioco as Scopa).puntiFatti += counters[giocatori.indexOf(g)];
+      switch (gioco) {
+        case SCOPA:
+          (g.gioco as Scopa).puntiFatti += counters[giocatori.indexOf(g)];
+          break;
+        case BRISCOLA:
+          break;
+        case CIRULLA:
+          (g.gioco as Cirulla).puntiFatti += counters[giocatori.indexOf(g)];
+          break;
+      }
       g.gioco.partiteGiocate++;
       if (giocatori.indexOf(g) == counters.indexOf(ordered[0]))
         g.gioco.partiteVinte++;

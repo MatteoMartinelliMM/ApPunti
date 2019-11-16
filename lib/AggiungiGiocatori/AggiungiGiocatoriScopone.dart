@@ -234,14 +234,14 @@ class ScoponeState extends State<Scopone> {
                 focusNode: focusNodeList[indexGiocatore],
                 textInputAction: TextInputAction.next,
                 onSubmitted: (value) {
+                  widget.isLoading[indexGiocatore] = true;
                   widget.fDbH
                       .getGiocatore(value, SCOPONE_SCIENTIFICO)
                       .then((Giocatore g) {
                     setState(() {
-                      widget.isLoading[indexGiocatore] = true;
                       widget.isLoading[indexGiocatore] = false;
                       if (g != null && !widget.giocatori.contains(g)) {
-                        widget.isLoading[indexGiocatore] = true;
+                        widget.valids[indexGiocatore] = true;
                         widget.giocatori[indexGiocatore] = g;
                         controller.text = g.name;
                       } else if (g != null && widget.giocatori.contains(g)) {

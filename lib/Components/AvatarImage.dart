@@ -11,7 +11,7 @@ class AvatarImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-        borderRadius: BorderRadius.circular(25.0),
+        borderRadius: BorderRadius.circular(90.0),
         child: getUserImage(url, height, width));
   }
 
