@@ -3,8 +3,11 @@ import 'package:flutter_app/AggiungiGiocatori/BaseAggiungiGiocatori.dart';
 import 'package:flutter_app/AggiungiGiocatori/aggiungigiocatori.dart';
 import 'package:flutter_app/Components/AutoCompleteText.dart';
 import 'package:flutter_app/Components/AvatarImage.dart';
+import 'package:flutter_app/Model/FirebaseDatabaseHelper.dart';
+import 'package:flutter_app/Model/Giochi/Asse.dart';
+import 'package:flutter_app/Model/Giochi/Gioco.dart';
+import 'package:flutter_app/Model/Giochi/Presidente.dart';
 
-import '../ContaPunti/BaseContaPunti.dart';
 import '../Model/Constants.dart';
 import '../Model/Giocatore.dart';
 import 'AggiungiGiocatoriBriscolaAChiamata.dart';
@@ -16,10 +19,13 @@ class AggiungiGiocatoriPresidente extends StatefulWidget
 
   OnNewGiocatore onNewGiocatore;
 
+  FirebaseDatabaseHelper fbDbH;
   VoidCallback toggleFab;
 
   AggiungiGiocatoriPresidente(
-      this.giocatori, this.gioco, this.toggleFab, this.onNewGiocatore);
+      this.giocatori, this.gioco, this.toggleFab, this.onNewGiocatore) {
+    fbDbH = new FirebaseDatabaseHelper();
+  }
 
   @override
   State<StatefulWidget> createState() {
@@ -28,9 +34,15 @@ class AggiungiGiocatoriPresidente extends StatefulWidget
 
   @override
   bool canGoNext() {
-    return gioco == PRESIDENTE
+    bool canGoNext = gioco == PRESIDENTE
         ? giocatori?.length >= 4 ?? false
         : giocatori?.length >= 3 ?? false;
+    if (canGoNext) {
+      for (Giocatore g in giocatori) {
+        if (g.gioco == null) return false;
+      }
+    }
+    return canGoNext;
   }
 
   @override
@@ -42,7 +54,6 @@ class AggiungiGiocatoriPresidente extends StatefulWidget
 class AggiungiGiocatoriPresidenteState
     extends State<AggiungiGiocatoriPresidente> {
   OnSubmitted onSubmitted;
-
 
   ObjectKey key;
 
@@ -120,7 +131,7 @@ class AggiungiGiocatoriPresidenteState
                     child: ListTile(
                       leading: AvatarImage(widget.giocatori[index].url, 60, 60),
                       title: Text(widget.giocatori[index].name),
-                      subtitle: Text(widget.giocatori[index].points.toString()),
+                      subtitle: Text(fillDescription(widget.giocatori[index])),
                     ),
                   );
                 },
@@ -134,11 +145,29 @@ class AggiungiGiocatoriPresidenteState
     );
   }
 
+  String fillDescription(Giocatore g) {
+    String toReturn = "";
+    if (g.gioco != null) {
+      toReturn =
+          "Presidente: " + g.gioco.partiteVinte.toString() + " Schiavo: ";
+      if (widget.gioco == PRESIDENTE)
+        toReturn += (g.gioco as Presidente).schiavo.toString();
+      else
+        toReturn += (g.gioco as Asse).schiavo.toString();
+    }
+    return toReturn;
+  }
+
   onGiocatoreSubmitted(Giocatore g) {
     setState(() {
       widget.giocatori.add(g);
       key = new ObjectKey(widget.giocatori);
-      if (widget.canGoNext()) widget.toggleFab;
+      widget.fbDbH.getGiocoInfos(widget.gioco, g.name).then((Gioco gioco) {
+        setState(() {
+          widget.giocatori[widget.giocatori.indexOf(g)].gioco = gioco;
+          if (widget.canGoNext()) widget.toggleFab;
+        });
+      });
     });
   }
 

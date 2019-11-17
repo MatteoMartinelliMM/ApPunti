@@ -69,7 +69,7 @@ class AutoCompleteTextState extends State<AutoCompleteText> {
         if (!widget.giocatoriFromBe.contains(giocatore) &&
             !widget.selectedGiocatori.contains(giocatore))
           widget.onNewGiocatore(value);
-        else if (widget.giocatoriFromBe.contains(giocatore))
+        else if (widget.giocatoriFromBe.contains(giocatore) && !widget.selectedGiocatori.contains(giocatore))
           submitted(widget
               .giocatoriFromBe[widget.giocatoriFromBe.indexOf(giocatore)]);
       },

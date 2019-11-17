@@ -4,6 +4,7 @@ import 'package:flutter_app/Components/CounterLayout.dart';
 import 'package:flutter_app/ContaPunti/BaseContaPunti.dart';
 import 'package:flutter_app/Model/FirebaseDatabaseHelper.dart';
 import 'package:flutter_app/Model/Giocatore.dart';
+import 'package:flutter_app/Model/Giochi/Asse.dart';
 import 'package:flutter_app/Model/Giochi/Presidente.dart';
 
 import '../Model/Constants.dart';
@@ -55,15 +56,18 @@ class PresidenteContaPunti extends StatefulWidget implements BaseContaPunti {
     for (Giocatore g in giocatori) {
       g.gioco.partiteGiocate += totPartite;
       g.gioco.partiteVinte += countPresidente[giocatori.indexOf(g)];
-      (g.gioco as Presidente).schiavo += countSchiavo[giocatori.indexOf(g)];
+      if (giocatori is Presidente)
+        (g.gioco as Presidente).schiavo += countSchiavo[giocatori.indexOf(g)];
+      else
+        (g.gioco as Asse).schiavo += countSchiavo[giocatori.indexOf(g)];
     }
     FirebaseDatabaseHelper fbdh = new FirebaseDatabaseHelper();
     fbdh.updateGioco(giocatori, gioco);
   }
 
   int getTotPartite() {
-    int toRet;
-    for (int i in countPresidente) toRet += i;
+    int toRet = 0;
+    for (int i in countPresidente) toRet += i ?? 0;
     return toRet;
   }
 }
