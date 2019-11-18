@@ -92,7 +92,7 @@ class FirebaseDatabaseHelper {
       List<dynamic> keys = (snapshot.value as Map).keys.toList();
       List<Giocatore> giocatori = new List();
       for (String k in keys) {
-        Giocatore g = Giocatore.fromMap(snapshot.value[k]);
+        Giocatore g = Giocatore.fromFirebaseMap(snapshot.value[k]);
         giocatori.add(g);
       }
       return giocatori;
@@ -120,7 +120,7 @@ class FirebaseDatabaseHelper {
     giochi.add(ASSE);
     giochi.add(CIRULLA);
     Giocatore g = Giocatore.newGiocatoreForFB(name, numero);
-    _databaseReference.child(UTENTI).child(name).set(g.giocatoreAsMap());
+    _databaseReference.child(UTENTI).child(name).set(g.giocatoreAsFirebaseMap());
     int count = 0;
     for (String g in giochi) {
       count++;

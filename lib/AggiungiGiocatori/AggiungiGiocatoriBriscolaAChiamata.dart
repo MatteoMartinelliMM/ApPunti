@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/AggiungiGiocatori/aggiungigiocatori.dart';
-import 'package:flutter_app/Components/AggiungiGiocatoriDialog.dart';
 import 'package:flutter_app/Components/AvatarImage.dart';
 
 import '../Components/AutoCompleteText.dart';
@@ -123,7 +122,7 @@ class AggiungiGiocatoriBriscolaAChiamataState
                           widget.giocatoriGiocanti[index].url, 60, 60),
                       title: Text(widget.giocatoriGiocanti[index].name),
                       subtitle: Text(
-                          widget.giocatoriGiocanti[index].points.toString()),
+                          widget.giocatoriGiocanti[index].gioco.partiteGiocate.toString()),
                     ),
                   );
                 },

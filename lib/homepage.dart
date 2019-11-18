@@ -5,9 +5,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app/Model/Constants.dart';
+import 'package:flutter_app/Model/DatabaseProvider.dart';
 
 import 'AggiungiGiocatori/aggiungigiocatori.dart';
 import 'Model/FirebaseDatabaseHelper.dart';
+import 'Model/Giocatore.dart';
 
 main() => runApp(ContaPunti());
 
@@ -16,6 +18,7 @@ class ContaPunti extends StatelessWidget {
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+    DatabaseProvider.db.getDatabaseInstance();
     return MaterialApp(
       title: 'Conta punti',
       theme: ThemeData.dark(),
