@@ -52,9 +52,12 @@ class Giocatore {
     return map;
   }
 
-  Map<String,String> giocatoreAsDbMap(){
-    Map giocatoreAsFirebaseMap = this.giocatoreAsFirebaseMap();
-    giocatoreAsFirebaseMap["darkMode"] = false;
-    return giocatoreAsFirebaseMap;
+  Map<String,dynamic> giocatoreAsDbMap(){
+    Map<String, dynamic> map = new Map();
+    map[NAME] = name;
+    map[NUMERO] = numero;
+    map[URL] = url;
+    map["darkMode"] = false;
+    return map;
   }
 }
