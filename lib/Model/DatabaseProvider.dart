@@ -2,11 +2,17 @@ import 'package:flutter_app/Model/Giocatore.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite/sqlite_api.dart';
 
+import 'Giochi/Gioco.dart';
+
 class DatabaseProvider {
   DatabaseProvider._();
 
-  static final DatabaseProvider db = DatabaseProvider._();
+  static final DatabaseProvider _instance = DatabaseProvider._();
   Database _db;
+
+  factory DatabaseProvider() {
+    return _instance;
+  }
 
   Future<Database> get database async {
     if (_db != null) return _db;
@@ -16,15 +22,15 @@ class DatabaseProvider {
 
   getDatabaseInstance() async {
     String path = 'assets/persistance/' + 'appunti.db';
-    return await openDatabase(path, version: 1,onOpen: (db){},
+    return await openDatabase(path, version: 1, onOpen: (db) {},
         onCreate: (Database db, int version) async {
-      await db.execute("CREATE TABLE Giocatore ("
+      await db.execute("CREATE TABLE $Giocatore ("
           "name TEXT PRIMARY KEY,"
           "number TEXT,"
           "url TEXT,"
           "darkMode INTEGER DEFAULT 0"
           ")");
-      await db.execute("CREATE TABLE Gioco ("
+      await db.execute("CREATE TABLE $Gioco ("
           "gioco TEXT PRIMARY KEY,"
           "partiteGiocate INTEGER,"
           "partiteVinte INTEGER,"
@@ -38,6 +44,7 @@ class DatabaseProvider {
   }
 
   Future<int> addUser(Giocatore g) async {
-    return await _db.insert("Giocatore", g.giocatoreAsDbMap());
+    Database db = await database;
+    return db.insert("Giocatore", g.giocatoreAsDbMap());
   }
 }
