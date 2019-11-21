@@ -19,8 +19,7 @@ class ContaPunti extends StatelessWidget {
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     DatabaseProvider db = new DatabaseProvider();
-    var databaseInstance = db.getDatabaseInstance();
-    db.addUser(new Giocatore('mimmo'));
+    db.addUser(new Giocatore('Mimmo'));
     return MaterialApp(
       title: 'Conta punti',
       theme: ThemeData.dark(),

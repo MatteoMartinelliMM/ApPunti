@@ -21,13 +21,13 @@ class DatabaseProvider {
     return _db;
   }
 
-  Future<Database> getDatabaseInstance() async {
+  Future getDatabaseInstance() async {
     String path = 'assets/persistance/' + 'appunti.db';
     return await openDatabase(path, version: 1, onOpen: (db) {},
         onCreate: (Database db, int version) async {
       await db.execute("CREATE TABLE $Giocatore ("
           "name TEXT PRIMARY KEY,"
-          "number TEXT,"
+          "numero TEXT,"
           "url TEXT,"
           "darkMode INTEGER DEFAULT 0"
           ")");
@@ -42,7 +42,6 @@ class DatabaseProvider {
           "FOREIGN KEY(playerName) REFERENCES Giocatore(name)"
           ")");
     });
-    return d;
   }
 
   Future<int> addUser(Giocatore g) async {
