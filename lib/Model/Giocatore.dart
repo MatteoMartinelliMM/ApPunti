@@ -21,6 +21,13 @@ class Giocatore {
     this.url = '';
   }
 
+  Giocatore.fromDbMap(Map<String, dynamic> result){
+    name = result[NAME];
+    numero = result[NUMERO];
+    url = result[URL];
+    darkMode = result[DARK_MODE];
+  }
+
   @override
   bool operator ==(other) {
     return this.name == other.name;
@@ -52,12 +59,18 @@ class Giocatore {
     return map;
   }
 
+  Map<String, dynamic> darkModeAsMap(){
+    Map<String, dynamic> map = new Map();
+    map[DARK_MODE] = darkMode;
+    return map;
+  }
+
   Map<String,dynamic> giocatoreAsDbMap(){
     Map<String, dynamic> map = new Map();
     map[NAME] = name;
     map[NUMERO] = numero;
     map[URL] = url;
-    map["darkMode"] = false;
+    map[DARK_MODE] = false;
     return map;
   }
 }

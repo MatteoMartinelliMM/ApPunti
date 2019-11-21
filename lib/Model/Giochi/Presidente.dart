@@ -15,6 +15,10 @@ class Presidente extends Gioco {
     _schiavo = 0;
   }
 
+  Presidente.fromDbMap(Map<String, dynamic> map) : super.fromDbMap(map) {
+    _schiavo = map[SCHIAVO];
+  }
+
   int get schiavo => _schiavo;
 
   set schiavo(int value) {
@@ -26,6 +30,12 @@ class Presidente extends Gioco {
     Map<String, int> asMap = super.asMap();
     asMap[SCHIAVO] = _schiavo;
     return asMap;
+  }
+
+  Map<String, dynamic> asDbMap() {
+    Map<String, dynamic> map = super.asDbMap();
+    map[SCHIAVO] = schiavo;
+    return map;
   }
 
 

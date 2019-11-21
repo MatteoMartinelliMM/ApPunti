@@ -27,4 +27,10 @@ class ScoponeGioco extends Gioco {
     asMap[PUNTI_FATTI] = _puntiFatti;
     return asMap;
   }
+
+  Map<String, dynamic> asDbMap() {
+    Map<String, dynamic> map = super.asDbMap();
+    map[PUNTI_FATTI] = puntiFatti;
+    return map;
+  }
 }

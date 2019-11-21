@@ -27,4 +27,10 @@ class Asse extends Gioco {
     asMap[SCHIAVO] = _schiavo;
     return asMap;
   }
+
+  Map<String, dynamic> asDbMap() {
+    Map<String, dynamic> map = super.asDbMap();
+    map[SCHIAVO] = schiavo;
+    return map;
+  }
 }

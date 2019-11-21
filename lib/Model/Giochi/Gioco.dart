@@ -39,4 +39,17 @@ abstract class Gioco {
   Map<String, double> asMapBriscolaAChiamata() {
     return new Map();
   }
+
+  Map<String, dynamic> asDbMap() {
+    Map<String, dynamic> values = new Map();
+    values[GIOCO] = runtimeType.toString();
+    values[PARTITE_GIOCATE] = _partiteGiocate;
+    values[PARTITE_VINTE] = _partiteVinte;
+    return values;
+  }
+
+  Gioco.fromDbMap(Map<String, dynamic> map) {
+    _partiteGiocate = map[PARTITE_GIOCATE];
+    _partiteVinte = map[PARTITE_VINTE];
+  }
 }

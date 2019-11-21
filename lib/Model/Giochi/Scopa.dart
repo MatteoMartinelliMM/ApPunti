@@ -15,6 +15,10 @@ class Scopa extends Gioco {
     _puntiFatti = datasnapshot.value[PUNTI_FATTI];
   }
 
+  Scopa.fromDbMap(Map<String, dynamic> map) : super.fromDbMap(map) {
+    _puntiFatti = map[PUNTI_FATTI];
+  }
+
   int get puntiFatti => _puntiFatti;
 
   set puntiFatti(int value) {
@@ -27,4 +31,11 @@ class Scopa extends Gioco {
     asMap[PUNTI_FATTI] = _puntiFatti;
     return asMap;
   }
+
+  Map<String, dynamic> asDbMap() {
+    Map<String, dynamic> map = super.asDbMap();
+    map[PUNTI_FATTI] = puntiFatti;
+    return map;
+  }
+
 }
