@@ -6,4 +6,6 @@ class Briscola extends Gioco {
       : super.fromSnapshot(datasnapshot);
 
   Briscola.giocoForFb() : super.giocoForFb();
+
+  Briscola.fromDbMap(Map<String, dynamic> map) : super.fromDbMap(map);
 }

@@ -15,6 +15,10 @@ class ScoponeGioco extends Gioco {
     _puntiFatti = 0;
   }
 
+  ScoponeGioco.fromDbMap(Map<String, dynamic> map) : super.fromDbMap(map) {
+    _puntiFatti = map[PUNTI_FATTI];
+  }
+
   int get puntiFatti => _puntiFatti;
 
   set puntiFatti(int value) {

@@ -33,4 +33,8 @@ class Asse extends Gioco {
     map[SCHIAVO] = schiavo;
     return map;
   }
+
+  Asse.fromDbMap(Map<String, dynamic> map) : super.fromDbMap(map) {
+    _schiavo = map[SCHIAVO];
+  }
 }

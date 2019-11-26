@@ -6,10 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app/Model/Constants.dart';
 import 'package:flutter_app/Model/DatabaseProvider.dart';
+import 'package:flutter_app/Model/Giochi/BriscolaAChiamata.dart';
+import 'package:flutter_app/Model/Giochi/Presidente.dart';
 
 import 'AggiungiGiocatori/aggiungigiocatori.dart';
 import 'Model/FirebaseDatabaseHelper.dart';
 import 'Model/Giocatore.dart';
+import 'Model/Giochi/Gioco.dart';
+import 'Model/Giochi/ScoponeGioco.dart';
 
 main() => runApp(ContaPunti());
 
@@ -66,7 +70,12 @@ class SelezionaGioco extends StatelessWidget {
       trailing: Icon(Icons.keyboard_arrow_right),
       onTap: () {
         onGiocoSelected(_giochi[index], context);
-        fbDh.getAllGiocatori();
+        DatabaseProvider db = new DatabaseProvider();
+        List<Gioco> giochi = new List();
+        giochi.add(new ScoponeGioco.giocoForFb());
+        giochi.add(new BriscolaAChiamata.giocoForFb());
+        giochi.add(new Presidente.giocoForFb());
+        db.insertAllGiochi(giochi, 'Mimmo');
       },
     );
   }
