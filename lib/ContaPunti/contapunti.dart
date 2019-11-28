@@ -99,7 +99,7 @@ class ContaPuntiGiocatoriState extends State<ContaPuntiGiocatori> {
       actions: <Widget>[
         FlatButton(
             onPressed: () {
-              Navigator.popUntil(context, ModalRoute.withName('/'));
+              Navigator.popUntil(context, ModalRoute.withName('/Home'));
             },
             child: Text('No')),
         FlatButton(

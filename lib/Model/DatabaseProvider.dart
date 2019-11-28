@@ -131,4 +131,13 @@ class DatabaseProvider {
     }
     return giochi;
   }
+
+  Future<Giocatore> getLoggedUser() async {
+    Database db = await database;
+    List<Map<String, dynamic>> res = await db.query('Giocatore');
+    if (res != null && res.isNotEmpty)
+      return Giocatore.fromDbMap(res[0]);
+    else
+      return null;
+  }
 }

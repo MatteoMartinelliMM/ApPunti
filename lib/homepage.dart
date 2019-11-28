@@ -1,19 +1,13 @@
-import 'dart:math';
-
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_app/Model/Constants.dart';
 import 'package:flutter_app/Model/DatabaseProvider.dart';
-import 'package:flutter_app/Model/Giochi/BriscolaAChiamata.dart';
-import 'package:flutter_app/Model/Giochi/Presidente.dart';
 
-import 'AggiungiGiocatori/aggiungigiocatori.dart';
-import 'Model/FirebaseDatabaseHelper.dart';
+import 'CheckLogin.dart';
+import 'Model/Constants.dart';
 import 'Model/Giocatore.dart';
-import 'Model/Giochi/Gioco.dart';
-import 'Model/Giochi/ScoponeGioco.dart';
+import 'SelezionaGioco.dart';
 
 main() => runApp(ContaPunti());
 
@@ -27,100 +21,53 @@ class ContaPunti extends StatelessWidget {
     return MaterialApp(
       title: 'Conta punti',
       theme: ThemeData.dark(),
-      home: HomePage(),
-    );
-  }
-}
-
-class HomePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(title: Text('Seleziona gioco')), body: SelezionaGioco());
-  }
-}
-
-class SelezionaGioco extends StatelessWidget {
-  List<String> _giochi = new List();
-  FirebaseDatabaseHelper fbDh = new FirebaseDatabaseHelper();
-
-  @override
-  Widget build(BuildContext context) {
-    populateList();
-    return Align(
-        alignment: Alignment.center,
-        child: ListView.separated(
-            itemCount: _giochi.length,
-            itemBuilder: (context, itemCount) {
-              return getCustomChildElement(itemCount, context);
-            },
-            separatorBuilder: (context, itemCount) {
-              return Divider();
-            }));
-  }
-
-  ListTile getCustomChildElement(int index, BuildContext context) {
-    return new ListTile(
-      title: Align(
-          alignment: Alignment.center,
-          child: Text(_giochi[index], style: TextStyle(color: Colors.white))),
-      leading: CircleAvatar(
-          backgroundColor: Colors.white,
-          child: Image.asset(getImageAssets(_giochi[index]))),
-      trailing: Icon(Icons.keyboard_arrow_right),
-      onTap: () {
-        onGiocoSelected(_giochi[index], context);
-        DatabaseProvider db = new DatabaseProvider();
-        List<Gioco> giochi = new List();
-        giochi.add(new ScoponeGioco.giocoForFb());
-        giochi.add(new BriscolaAChiamata.giocoForFb());
-        giochi.add(new Presidente.giocoForFb());
-        db.insertAllGiochi(giochi, 'Mimmo');
+      home: SplashScreen(),
+      routes: <String, WidgetBuilder>{
+        '/HomeScreen': (BuildContext context) => new HomePage(null)
       },
     );
   }
+}
 
-  String getImageAssets(String gioco) {
-    String basePath = 'assets/image/';
-    String imageName = '';
-    switch (gioco) {
-      case BRISCOLA:
-        imageName = "assocoppeicon.png";
-        break;
-      case BRISCOLA_A_CHIAMATA:
-        imageName = "quattrodispadeicon.png";
-        break;
-      case SCOPONE_SCIENTIFICO:
-        imageName = "assodenariicon.png";
-        break;
-      case SCOPA:
-        imageName = "assobastoniicon.png";
-        break;
-      case CIRULLA:
-        imageName = "assospadeicon.png";
-        break;
-      case ASSE:
-        imageName = "cirulla.png";
-        break;
-      case PRESIDENTE:
-        imageName = "presidenteicon.png";
-        break;
-    }
-    return basePath + imageName;
+class SplashScreen extends StatefulWidget {
+  CheckLogin checkLogin = new CheckLogin();
+
+  @override
+  State<StatefulWidget> createState() {
+    return SplashScreenState();
+  }
+}
+
+class SplashScreenState extends State<SplashScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+        future: widget.checkLogin.userIsLogged(),
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.none:
+            case ConnectionState.waiting:
+            case ConnectionState.active:
+              return loadingScreen();
+              break;
+            case ConnectionState.done:
+              List<Giocatore> giocatori = snapshot.data;
+              SchedulerBinding.instance.addPostFrameCallback((_) {
+                Navigator.of(context).pushReplacement(new MaterialPageRoute(
+                    builder: (BuildContext context) =>
+                        new HomePage(giocatori)));
+              });
+              return loadingScreen();
+          }
+        });
   }
 
-  void populateList() {
-    _giochi.add(BRISCOLA);
-    _giochi.add(BRISCOLA_A_CHIAMATA);
-    _giochi.add(SCOPONE_SCIENTIFICO);
-    _giochi.add(SCOPA);
-    _giochi.add(CIRULLA);
-    _giochi.add(ASSE);
-    _giochi.add(PRESIDENTE);
-  }
-
-  void onGiocoSelected(String gioco, context) {
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => SelezionaGiocatori(gioco)));
+  Widget loadingScreen() {
+    return Container(
+      color: Color(0xFFE4D700),
+      child: Center(
+        child: Image.asset(IMAGE_PATH + 'splash_logo.png'),
+      ),
+    );
   }
 }
