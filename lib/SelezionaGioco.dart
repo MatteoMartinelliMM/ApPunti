@@ -5,19 +5,23 @@ import 'AggiungiGiocatori/aggiungigiocatori.dart';
 import 'Model/Constants.dart';
 
 class HomePage extends StatelessWidget {
-  List<Giocatore> giocatori;
+  Giocatore giocatore;
 
-  HomePage(this.giocatori);
+  HomePage(this.giocatore);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('Seleziona gioco')), body: SelezionaGioco());
+        appBar: AppBar(title: Text('Seleziona gioco')),
+        body: SelezionaGioco(giocatore));
   }
 }
 
 class SelezionaGioco extends StatelessWidget {
   List<String> _giochi = new List();
+  Giocatore giocatore;
+
+  SelezionaGioco(this.giocatore);
 
   @override
   Widget build(BuildContext context) {

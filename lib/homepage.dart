@@ -53,9 +53,15 @@ class SplashScreenState extends State<SplashScreen> {
             case ConnectionState.done:
               List<Giocatore> giocatori = snapshot.data;
               SchedulerBinding.instance.addPostFrameCallback((_) {
-                Navigator.of(context).pushReplacement(new MaterialPageRoute(
-                    builder: (BuildContext context) =>
-                        new HomePage(giocatori)));
+                if (giocatori.length > 1) {
+                  Navigator.of(context).pushReplacement(new MaterialPageRoute(
+                      builder: (BuildContext context) =>
+                      new LoginPage(giocatori)));
+                } else {
+                  Navigator.of(context).pushReplacement(new MaterialPageRoute(
+                      builder: (BuildContext context) =>
+                          new HomePage(giocatori)));
+                }
               });
               return loadingScreen();
           }
@@ -71,3 +77,5 @@ class SplashScreenState extends State<SplashScreen> {
     );
   }
 }
+
+
