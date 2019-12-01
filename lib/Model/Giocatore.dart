@@ -21,11 +21,12 @@ class Giocatore {
     this.url = '';
   }
 
-  Giocatore.fromDbMap(Map<String, dynamic> result){
+  Giocatore.fromDbMap(Map<String, dynamic> result) {
     name = result[NAME];
     numero = result[NUMERO];
     url = result[URL];
-    darkMode = result[DARK_MODE];
+    int darkMode = result[DARK_MODE];
+    this.darkMode = darkMode == 1;
   }
 
   @override
@@ -59,13 +60,13 @@ class Giocatore {
     return map;
   }
 
-  Map<String, dynamic> darkModeAsMap(){
+  Map<String, dynamic> darkModeAsMap() {
     Map<String, dynamic> map = new Map();
-    map[DARK_MODE] = darkMode;
+    map[DARK_MODE] = darkMode ? 1 : 0;
     return map;
   }
 
-  Map<String,dynamic> giocatoreAsDbMap(){
+  Map<String, dynamic> giocatoreAsDbMap() {
     Map<String, dynamic> map = new Map();
     map[NAME] = name;
     map[NUMERO] = numero;

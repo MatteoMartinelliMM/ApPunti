@@ -2,11 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_app/Model/DatabaseProvider.dart';
 
 import 'CheckLogin.dart';
+import 'LoginPage.dart';
 import 'Model/Constants.dart';
-import 'Model/Giocatore.dart';
 import 'SelezionaGioco.dart';
 
 main() => runApp(ContaPunti());
@@ -16,8 +15,6 @@ class ContaPunti extends StatelessWidget {
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-    DatabaseProvider db = new DatabaseProvider();
-    db.addUser(new Giocatore('Mimmo'));
     return MaterialApp(
       title: 'Conta punti',
       theme: ThemeData.dark(),
@@ -41,31 +38,18 @@ class SplashScreen extends StatefulWidget {
 class SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: widget.checkLogin.userIsLogged(),
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.none:
-            case ConnectionState.waiting:
-            case ConnectionState.active:
-              return loadingScreen();
-              break;
-            case ConnectionState.done:
-              List<Giocatore> giocatori = snapshot.data;
-              SchedulerBinding.instance.addPostFrameCallback((_) {
-                if (giocatori.length > 1) {
-                  Navigator.of(context).pushReplacement(new MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                      new LoginPage(giocatori)));
-                } else {
-                  Navigator.of(context).pushReplacement(new MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          new HomePage(giocatori)));
-                }
-              });
-              return loadingScreen();
-          }
+    widget.checkLogin.userIsLogged().then((giocatori) {
+      if (giocatori.length > 1) {
+        Navigator.of(context).pushReplacement(new MaterialPageRoute(
+            builder: (BuildContext context) => new LoginPage(giocatori)));
+      } else {
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          Navigator.of(context).pushReplacement(new MaterialPageRoute(
+              builder: (BuildContext context) => new HomePage(giocatori[0])));
         });
+      }
+    });
+    return loadingScreen();
   }
 
   Widget loadingScreen() {
@@ -77,5 +61,3 @@ class SplashScreenState extends State<SplashScreen> {
     );
   }
 }
-
-

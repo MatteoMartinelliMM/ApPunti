@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/Components/AvatarImage.dart';
 import 'package:flutter_app/Model/Giocatore.dart';
 
 import 'AggiungiGiocatori/aggiungigiocatori.dart';
@@ -13,6 +14,28 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text('Seleziona gioco')),
+        drawer: Drawer(
+          child: ListView(
+            children: <Widget>[
+              Container(
+                child: AvatarImage(giocatore.url, 120, 120),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Center(
+                    child:
+                        Text(giocatore.name, style: TextStyle(fontSize: 18))),
+              ),
+              ListTile(
+                onTap: () {},
+                title: Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Text('Stats', style: TextStyle(fontSize: 18)),
+                ),
+              ),
+            ],
+          ),
+        ),
         body: SelezionaGioco(giocatore));
   }
 }
