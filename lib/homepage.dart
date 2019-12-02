@@ -39,7 +39,7 @@ class SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     widget.checkLogin.userIsLogged().then((giocatori) {
-      if (giocatori.length > 1) {
+      if (giocatori == null || giocatori.length > 1) {
         Navigator.of(context).pushReplacement(new MaterialPageRoute(
             builder: (BuildContext context) => new LoginPage(giocatori)));
       } else {

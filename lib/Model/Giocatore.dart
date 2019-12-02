@@ -9,6 +9,7 @@ class Giocatore {
   String url;
   bool darkMode;
   Gioco gioco;
+  List<Gioco> giochi;
 
   Giocatore(this.name) {
     url = '';
