@@ -57,7 +57,10 @@ class DatabaseProvider {
 
   Future<int> addUser(Giocatore g) async {
     Database db = await database;
-    return db.insert("Giocatore", g.giocatoreAsDbMap());
+    int id = await db.insert("Giocatore", g.giocatoreAsDbMap()).then((id) {
+      return id;
+    });
+    return id;
   }
 
   Future<int> updateDarkMode(Giocatore g) async {

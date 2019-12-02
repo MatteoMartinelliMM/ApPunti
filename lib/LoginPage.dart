@@ -77,12 +77,13 @@ class LogninPageState extends State<LoginPage> {
                           Giocatore giocatore = widget.giocatori[indexOfUser];
                           if (giocatore.numero == widget.numero.text) {
                             DatabaseProvider db = new DatabaseProvider();
-                            db.addUser(giocatore);
-                            widget.isError = false;
-                            Navigator.of(context).pushReplacement(
-                                new MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        new HomePage(giocatore)));
+                            db.addUser(giocatore).then((id) {
+                              widget.isError = false;
+                              Navigator.of(context).pushReplacement(
+                                  new MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          new HomePage(giocatore)));
+                            });
                           } else
                             widget.isError = true;
                         } else
@@ -96,6 +97,10 @@ class LogninPageState extends State<LoginPage> {
                   style: TextStyle(fontSize: 18),
                 ),
               ),
+            ),
+            Visibility(
+              visible: widget.isError,
+              child: RaisedButton(onPressed: () {}),
             )
           ],
         ),
