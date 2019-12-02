@@ -96,7 +96,7 @@ class SelezionaGioco extends StatelessWidget {
           child: Image.asset(getImageAssets(_giochi[index]))),
       trailing: Icon(Icons.keyboard_arrow_right),
       onTap: () {
-        onGiocoSelected(_giochi[index], context);
+        onGiocoSelected(_giochi[index],giocatore, context);
         /*DatabaseProvider db = new DatabaseProvider();
         List<Gioco> giochi = new List();
         giochi.add(new ScoponeGioco.giocoForFb());
@@ -146,8 +146,8 @@ class SelezionaGioco extends StatelessWidget {
     _giochi.add(PRESIDENTE);
   }
 
-  void onGiocoSelected(String gioco, context) {
+  void onGiocoSelected(String gioco, Giocatore giocatore, BuildContext context) {
     Navigator.push(context,
-        MaterialPageRoute(builder: (context) => SelezionaGiocatori(gioco)));
+        MaterialPageRoute(builder: (context) => SelezionaGiocatori(gioco,giocatore)));
   }
 }

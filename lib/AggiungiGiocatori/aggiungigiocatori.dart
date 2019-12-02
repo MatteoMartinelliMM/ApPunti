@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/AggiungiGiocatori/AggiungiGiocatoriScopone.dart';
 import 'package:flutter_app/Components/AggiungiGiocatoriDialog.dart';
 import 'package:flutter_app/Model/Constants.dart';
+import 'package:flutter_app/Model/Giochi/ScoponeGioco.dart';
 
 import '../ContaPunti/contapunti.dart';
 import '../Model/Giocatore.dart';
@@ -16,7 +17,9 @@ typedef OnNewGiocatore = void Function(String name);
 class SelezionaGiocatori extends StatefulWidget {
   String gioco;
 
-  SelezionaGiocatori(this.gioco);
+  Giocatore loggedUser;
+
+  SelezionaGiocatori(this.gioco, this.loggedUser);
 
   BaseAggiungiGiocatori baseAggiungiGiocatori;
 
@@ -54,6 +57,9 @@ class SelezionaGiocatoriState extends State<SelezionaGiocatori> {
         break;
       case SCOPONE_SCIENTIFICO:
         giocatori = new List(4);
+        widget.loggedUser.gioco = widget.loggedUser.giochi
+            .where((g) => g is ScoponeGioco)
+            .toList()[0];
         focusNodeList = new List();
         controllerList = new List();
         for (int i = 0; i < giocatori.length; i++) {
@@ -74,7 +80,7 @@ class SelezionaGiocatoriState extends State<SelezionaGiocatori> {
         aggiungiGiocatoriBody =
             new AggiungiGiocatoriPresidente(giocatori, gioco, () {
           onMinimumGiocatoriReached();
-        },onNewGiocatore);
+        }, onNewGiocatore);
         break;
     }
     widget.baseAggiungiGiocatori =
