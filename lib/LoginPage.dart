@@ -1,7 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_app/Model/DatabaseProvider.dart';
+import 'package:flutter_app/Model/Giochi/BriscolaAChiamata.dart';
 
+import 'Model/FirebaseDatabaseHelper.dart';
 import 'Model/Giocatore.dart';
+import 'Model/Giochi/Asse.dart';
+import 'Model/Giochi/Briscola.dart';
+import 'Model/Giochi/Cirulla.dart';
+import 'Model/Giochi/Gioco.dart';
+import 'Model/Giochi/Presidente.dart';
+import 'Model/Giochi/Scopa.dart';
+import 'Model/Giochi/ScoponeGioco.dart';
 import 'SelezionaGioco.dart';
 
 class LoginPage extends StatefulWidget {
@@ -9,9 +19,11 @@ class LoginPage extends StatefulWidget {
 
   List<Giocatore> giocatori;
   TextEditingController user, numero;
+  FocusNode focusNode;
   bool canLogin = false;
 
   bool isError = false;
+  FirebaseDatabaseHelper fbdh;
 
   @override
   State<StatefulWidget> createState() {
@@ -36,9 +48,12 @@ class LogninPageState extends State<LoginPage> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextField(
+                textCapitalization: TextCapitalization.words,
+                textInputAction: TextInputAction.next,
                 controller: widget.user,
                 onSubmitted: (value) {
                   enableLoginBtn();
+                  FocusScope.of(context).requestFocus(widget.focusNode);
                 },
                 onChanged: (newValue) {
                   enableLoginBtn();
@@ -54,8 +69,12 @@ class LogninPageState extends State<LoginPage> {
               padding: const EdgeInsets.all(8.0),
               child: TextField(
                 controller: widget.numero,
+                textCapitalization: TextCapitalization.words,
+                textInputAction: TextInputAction.done,
+                focusNode: widget.focusNode,
                 onSubmitted: (value) {
                   enableLoginBtn();
+                  SystemChannels.textInput.invokeMethod('TextInput.hide');
                 },
                 onChanged: (newValue) {
                   enableLoginBtn();
@@ -76,14 +95,7 @@ class LogninPageState extends State<LoginPage> {
                         if (indexOfUser != -1) {
                           Giocatore giocatore = widget.giocatori[indexOfUser];
                           if (giocatore.numero == widget.numero.text) {
-                            DatabaseProvider db = new DatabaseProvider();
-                            db.addUser(giocatore).then((id) {
-                              widget.isError = false;
-                              Navigator.of(context).pushReplacement(
-                                  new MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          new HomePage(giocatore)));
-                            });
+                            addUserOnDbAndGoToHome(giocatore, context, true);
                           } else
                             widget.isError = true;
                         } else
@@ -100,12 +112,56 @@ class LogninPageState extends State<LoginPage> {
             ),
             Visibility(
               visible: widget.isError,
-              child: RaisedButton(onPressed: () {}),
+              child: RaisedButton(
+                  color: Colors.red,
+                  onPressed: () {
+                    Giocatore giocatore = new Giocatore(widget.user.text);
+                    giocatore.numero = widget.numero.text;
+                    widget.fbdh
+                        .createGiocatore(widget.user.text, widget.numero.text);
+                    addUserOnDbAndGoToHome(giocatore, context, false);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'Registrati',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  )),
             )
           ],
         ),
       ),
     );
+  }
+
+  void addUserOnDbAndGoToHome(
+      Giocatore giocatore, BuildContext context, bool fromLogin) {
+    DatabaseProvider db = new DatabaseProvider();
+    db.addUser(giocatore).then((id) {
+      widget.isError = false;
+      if (fromLogin) {
+        widget.fbdh.getAllGiochi(giocatore.name).then((giochi) {
+          db.insertAllGiochi(giochi, giocatore.name).then((id) {
+            Navigator.of(context).pushReplacement(new MaterialPageRoute(
+                builder: (BuildContext context) => new HomePage(giocatore)));
+          });
+        });
+      } else {
+        List<Gioco> giochi = new List();
+        giochi.add(new Scopa.giocoForFb());
+        giochi.add(new ScoponeGioco.giocoForFb());
+        giochi.add(new Briscola.giocoForFb());
+        giochi.add(new BriscolaAChiamata.giocoForFb());
+        giochi.add(new Cirulla.giocoForFb());
+        giochi.add(new Asse.giocoForFb());
+        giochi.add(new Presidente.giocoForFb());
+        db.insertAllGiochi(giochi, giocatore.name).then((id) {
+          Navigator.of(context).pushReplacement(new MaterialPageRoute(
+              builder: (BuildContext context) => new HomePage(giocatore)));
+        });
+      }
+    });
   }
 
   int userExists(String name) {
@@ -130,5 +186,7 @@ class LogninPageState extends State<LoginPage> {
     uKey = new ObjectKey(widget.user);
     nKey = new ObjectKey(widget.numero);
     cKey = new ObjectKey(widget.canLogin);
+    widget.focusNode = new FocusNode();
+    widget.fbdh = new FirebaseDatabaseHelper();
   }
 }
