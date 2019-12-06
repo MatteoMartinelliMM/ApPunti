@@ -15,6 +15,11 @@ class Cirulla extends Gioco {
     _puntiFatti = map[PUNTI_FATTI];
   }
 
+  Cirulla.fromDyanmicMap(Map<dynamic, dynamic> map)
+      : super.fromDynamicMap(map) {
+    _puntiFatti = map[PUNTI_FATTI];
+  }
+
   Cirulla.giocoForFb() : super.giocoForFb() {
     _puntiFatti = 0;
   }

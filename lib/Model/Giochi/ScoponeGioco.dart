@@ -15,6 +15,11 @@ class ScoponeGioco extends Gioco {
     _puntiFatti = 0;
   }
 
+  ScoponeGioco.fromDyanmicMap(Map<dynamic, dynamic> map)
+      : super.fromDynamicMap(map) {
+    _puntiFatti = map[PUNTI_FATTI];
+  }
+
   ScoponeGioco.fromDbMap(Map<String, dynamic> map) : super.fromDbMap(map) {
     _puntiFatti = map[PUNTI_FATTI];
   }

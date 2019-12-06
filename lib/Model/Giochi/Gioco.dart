@@ -19,6 +19,11 @@ abstract class Gioco {
     _partiteVinte = datasnapshot.value[PARTITE_VINTE];
   }
 
+  Gioco.fromDynamicMap(Map<dynamic, dynamic> map) {
+    _partiteGiocate = map[PARTITE_GIOCATE];
+    _partiteVinte = map[PARTITE_VINTE];
+  }
+
   set partiteGiocate(int value) {
     _partiteGiocate = value;
   }

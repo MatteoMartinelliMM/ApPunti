@@ -15,6 +15,11 @@ class Asse extends Gioco {
     _schiavo = 0;
   }
 
+  Asse.fromDyanmicMap(Map<dynamic, dynamic> map)
+      : super.fromDynamicMap(map) {
+    _schiavo = map[SCHIAVO];
+  }
+
   int get schiavo => _schiavo;
 
   set schiavo(int value) {

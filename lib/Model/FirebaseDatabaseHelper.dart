@@ -109,27 +109,28 @@ class FirebaseDatabaseHelper {
       List<dynamic> keys = (snapshot.value as Map).keys.toList();
       for (String k in keys) {
         Gioco g;
+        Map<dynamic, dynamic> d = snapshot.value[k];
         switch (k) {
-          case BRISCOLA:
-            g = Briscola.fromSnapshot(snapshot.value[k].value[name]);
+          case BRISCOLA_FB:
+            g = Briscola.fromDyanmicMap(d[name]);
             break;
-          case BRISCOLA_A_CHIAMATA:
-            g = BriscolaAChiamata.fromSnapshot(snapshot.value[k].value[name]);
+          case BRISCOLA_A_CHIAMATA_FB:
+            g = BriscolaAChiamata.fromDyanmicMap(d[name]);
             break;
-          case SCOPONE_SCIENTIFICO:
-            g = ScoponeGioco.fromSnapshot(snapshot.value[k].value[name]);
+          case SCOPONE_SCIENTIFICO_FB:
+            g = ScoponeGioco.fromDyanmicMap(d[name]);
             break;
-          case SCOPA:
-            g = Scopa.fromSnapshot(snapshot.value[k].value[name]);
+          case SCOPA_FB:
+            g = Scopa.fromDyanmicMap(d[name]);
             break;
-          case CIRULLA:
-            g = Cirulla.fromSnapshot(snapshot.value[k].value[name]);
+          case CIRULLA_FB:
+            g = Cirulla.fromDyanmicMap(d[name]);
             break;
-          case ASSE:
-            g = Asse.fromSnapshot(snapshot.value[k].value[name]);
+          case ASSE_FB:
+            g = Asse.fromDyanmicMap(d[name]);
             break;
-          case PRESIDENTE:
-            g = Presidente.fromSnapshot(snapshot.value[k].value[name]);
+          case PRESIDENTE_FB:
+            g = Presidente.fromDyanmicMap(d[name]);
             break;
         }
         giochi.add(g);

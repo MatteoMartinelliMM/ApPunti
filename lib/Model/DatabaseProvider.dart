@@ -100,6 +100,17 @@ class DatabaseProvider {
     });
   }
 
+  void updateGiochi(List<Gioco> giochi, String nomePlayer) async {
+    Database db = await database;
+    Batch batch = db.batch();
+    for (Gioco g in giochi) {
+      Map asDbMap = g.asDbMap();
+      asDbMap["playerName"] = nomePlayer;
+      batch.update("Gioco", asDbMap);
+    }
+    batch.commit(noResult: true);
+  }
+
   Future<List<Gioco>> selectAllGiochiByUsername(String name) async {
     Database db = await database;
     List<Map<String, dynamic>> result =

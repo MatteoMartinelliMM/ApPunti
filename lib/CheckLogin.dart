@@ -21,6 +21,9 @@ class CheckLogin {
             return giochi;
           });
           giocatore.giochi = giochi;
+          giocatore.darkMode = loggedUser.darkMode;
+          databeProvider.updateGiochi(giochi, giocatore.name);
+          return giocatore;
         });
         toReturn.add(g);
         return toReturn;

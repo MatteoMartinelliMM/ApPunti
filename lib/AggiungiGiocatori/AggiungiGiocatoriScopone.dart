@@ -194,7 +194,7 @@ class ScoponeState extends State<Scopone> {
                       ),
                       Center(
                         child: Text(
-                          giocatore.gioco.partiteGiocate > 0
+                          giocatore.gioco.partiteVinte > 0
                               ? giocatore.gioco.partiteVinte.toString()
                               : "N/D",
                           style: TextStyle(fontStyle: FontStyle.italic),
@@ -229,6 +229,7 @@ class ScoponeState extends State<Scopone> {
           child: Padding(
               padding: EdgeInsets.only(right: 8.0),
               child: TextField(
+                enabled: indexGiocatore != 0,
                 controller: controller,
                 textCapitalization: TextCapitalization.words,
                 focusNode: focusNodeList[indexGiocatore],
@@ -330,7 +331,7 @@ class ScoponeState extends State<Scopone> {
                 : (giocatore.gioco.partiteVinte /
                         giocatore.gioco.partiteGiocate) *
                     100)
-            .toString() +
+            .toStringAsFixed(2) +
         '%';
   }
 }

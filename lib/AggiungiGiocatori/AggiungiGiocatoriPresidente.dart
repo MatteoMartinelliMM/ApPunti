@@ -80,60 +80,7 @@ class AggiungiGiocatoriPresidenteState
             visible: widget?.giocatori?.isNotEmpty ?? false,
             child: ListView.separated(
                 itemBuilder: (context, index) {
-                  return Dismissible(
-                    key: ObjectKey(widget.giocatori[index]),
-                    background: Container(
-                      color: Colors.red,
-                      child: Row(
-                        children: <Widget>[
-                          Icon(Icons.delete, color: Colors.white),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: Center(
-                                child: Text(
-                              "Rimuovi Giocatore",
-                              style: TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.white,
-                                  fontStyle: FontStyle.italic),
-                            )),
-                          ),
-                        ],
-                      ),
-                    ),
-                    secondaryBackground: Container(
-                      color: Colors.red,
-                      child: Row(
-                        children: <Widget>[
-                          Spacer(),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: Center(
-                                child: Text(
-                              "Rimuovi Giocatore",
-                              style: TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.white,
-                                  fontStyle: FontStyle.italic),
-                            )),
-                          ),
-                          Icon(Icons.delete, color: Colors.white)
-                        ],
-                      ),
-                    ),
-                    onDismissed: (dismissDirection) {
-                      setState(() {
-                        autoCompleteText.updateGiocatore(
-                            widget.giocatori.removeAt(index), false);
-                        widget.toggleFab();
-                      });
-                    },
-                    child: ListTile(
-                      leading: AvatarImage(widget.giocatori[index].url, 60, 60),
-                      title: Text(widget.giocatori[index].name),
-                      subtitle: Text(fillDescription(widget.giocatori[index])),
-                    ),
-                  );
+                  return getSingleElement(index, autoCompleteText);
                 },
                 separatorBuilder: (context, itemCount) {
                   return Divider();
@@ -143,6 +90,70 @@ class AggiungiGiocatoriPresidenteState
         ),
       ],
     );
+  }
+
+  Widget getSingleElement(int index, AutoCompleteText autoCompleteText) {
+    if (index != 0) {
+      return Dismissible(
+        key: ObjectKey(widget.giocatori[index]),
+        background: Container(
+          color: Colors.red,
+          child: Row(
+            children: <Widget>[
+              Icon(Icons.delete, color: Colors.white),
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: Center(
+                    child: Text(
+                  "Rimuovi Giocatore",
+                  style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,
+                      fontStyle: FontStyle.italic),
+                )),
+              ),
+            ],
+          ),
+        ),
+        secondaryBackground: Container(
+          color: Colors.red,
+          child: Row(
+            children: <Widget>[
+              Spacer(),
+              Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: Center(
+                    child: Text(
+                  "Rimuovi Giocatore",
+                  style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,
+                      fontStyle: FontStyle.italic),
+                )),
+              ),
+              Icon(Icons.delete, color: Colors.white)
+            ],
+          ),
+        ),
+        onDismissed: (dismissDirection) {
+          setState(() {
+            autoCompleteText.updateGiocatore(
+                widget.giocatori.removeAt(index), false);
+            widget.toggleFab();
+          });
+        },
+        child: ListTile(
+          leading: AvatarImage(widget.giocatori[index].url, 60, 60),
+          title: Text(widget.giocatori[index].name),
+          subtitle: Text(fillDescription(widget.giocatori[index])),
+        ),
+      );
+    } else
+      return ListTile(
+        leading: AvatarImage(widget.giocatori[index].url, 60, 60),
+        title: Text(widget.giocatori[index].name),
+        subtitle: Text(fillDescription(widget.giocatori[index])),
+      );
   }
 
   String fillDescription(Giocatore g) {
