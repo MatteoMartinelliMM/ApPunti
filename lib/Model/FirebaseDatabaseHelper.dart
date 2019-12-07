@@ -100,11 +100,53 @@ class FirebaseDatabaseHelper {
     return giocatori;
   }
 
+  Future<List<Gioco>> getAllGiochi(String name) async {
+    List<Gioco> giochi = await _databaseReference
+        .child(GIOCHI)
+        .once()
+        .then((DataSnapshot snapshot) {
+      List<Gioco> giochi = new List();
+      List<dynamic> keys = (snapshot.value as Map).keys.toList();
+      for (String k in keys) {
+        Gioco g;
+        Map<dynamic, dynamic> d = snapshot.value[k];
+        switch (k) {
+          case BRISCOLA_FB:
+            g = Briscola.fromDyanmicMap(d[name]);
+            break;
+          case BRISCOLA_A_CHIAMATA_FB:
+            g = BriscolaAChiamata.fromDyanmicMap(d[name]);
+            break;
+          case SCOPONE_SCIENTIFICO_FB:
+            g = ScoponeGioco.fromDyanmicMap(d[name]);
+            break;
+          case SCOPA_FB:
+            g = Scopa.fromDyanmicMap(d[name]);
+            break;
+          case CIRULLA_FB:
+            g = Cirulla.fromDyanmicMap(d[name]);
+            break;
+          case ASSE_FB:
+            g = Asse.fromDyanmicMap(d[name]);
+            break;
+          case PRESIDENTE_FB:
+            g = Presidente.fromDyanmicMap(d[name]);
+            break;
+        }
+        giochi.add(g);
+      }
+      return giochi;
+    });
+    return giochi;
+  }
+
   void updateGioco(List<Giocatore> giocatori, String gioco) {
     for (Giocatore g in giocatori) {
       _databaseReference
-        ..child(GIOCHI).child(formatGiocoForFirebase(gioco)).child(g.name).update(
-            g.gioco is BriscolaAChiamata
+        ..child(GIOCHI)
+            .child(formatGiocoForFirebase(gioco))
+            .child(g.name)
+            .update(g.gioco is BriscolaAChiamata
                 ? g.gioco.asMapBriscolaAChiamata()
                 : g.gioco.asMap());
     }
@@ -120,7 +162,10 @@ class FirebaseDatabaseHelper {
     giochi.add(ASSE);
     giochi.add(CIRULLA);
     Giocatore g = Giocatore.newGiocatoreForFB(name, numero);
-    _databaseReference.child(UTENTI).child(name).set(g.giocatoreAsFirebaseMap());
+    _databaseReference
+        .child(UTENTI)
+        .child(name)
+        .set(g.giocatoreAsFirebaseMap());
     int count = 0;
     for (String g in giochi) {
       count++;
@@ -164,9 +209,9 @@ class FirebaseDatabaseHelper {
 
   String formatGiocoForFirebase(String g) {
     return g
-            .toLowerCase()
-            .replaceAll(" ", "")
-            .replaceAll("!", "")
-            .toLowerCase();
+        .toLowerCase()
+        .replaceAll(" ", "")
+        .replaceAll("!", "")
+        .toLowerCase();
   }
 }

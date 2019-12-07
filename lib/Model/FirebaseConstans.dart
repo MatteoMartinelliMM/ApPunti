@@ -10,6 +10,5 @@ const NUMERO = 'numero';
 const URL = 'url';
 const DARK_MODE = 'darkMode';
 const PUNTI_FATTI_BR = 'puntiFattiBrChiamata';
-const SCOPA_FB = 'scopa';
 const GIOCO = 'gioco';
 const PLAYER_NAME = 'playerName';

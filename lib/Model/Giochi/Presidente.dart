@@ -15,6 +15,11 @@ class Presidente extends Gioco {
     _schiavo = 0;
   }
 
+  Presidente.fromDyanmicMap(Map<dynamic, dynamic> map)
+      : super.fromDynamicMap(map) {
+    _schiavo = map[SCHIAVO];
+  }
+
   Presidente.fromDbMap(Map<String, dynamic> map) : super.fromDbMap(map) {
     _schiavo = map[SCHIAVO];
   }
@@ -37,6 +42,4 @@ class Presidente extends Gioco {
     map[SCHIAVO] = schiavo;
     return map;
   }
-
-
 }

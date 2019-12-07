@@ -17,6 +17,7 @@ class AggiungiGiocatoriScopa extends StatefulWidget
   String howmanyPlayer;
   List<String> nrOfPlayer;
 
+  Giocatore loggedUser;
   List<TextEditingController> etCList;
   List<bool> isLoading;
   List<bool> valids;
@@ -26,8 +27,8 @@ class AggiungiGiocatoriScopa extends StatefulWidget
 
   FirebaseDatabaseHelper fDbH;
 
-  AggiungiGiocatoriScopa(
-      this.giocatori, this.gioco, this.callback, this.onNewGiocatore) {
+  AggiungiGiocatoriScopa(this.loggedUser, this.giocatori, this.gioco,
+      this.callback, this.onNewGiocatore) {
     fDbH = new FirebaseDatabaseHelper();
   }
 
@@ -118,6 +119,7 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
     switch (widget.howmanyPlayer) {
       case DUO:
         widget.giocatori = widget.giocatori?.sublist(0, 2) ?? new List(2);
+        widget.giocatori[0] = widget.loggedUser;
         widget.etCList = widget.etCList?.sublist(0, 2) ?? new List(2);
         widget.mFocusList = widget.mFocusList?.sublist(0, 2) ?? new List(2);
         widget.isLoading = widget.isLoading?.sublist(0, 2) ?? new List(2);
@@ -368,6 +370,7 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
 
   TextField playerTextFiled(int i) {
     return TextField(
+      enabled: i != 0,
       focusNode: widget.mFocusList[i],
       textInputAction: widget.mFocusList.length - 1 > i
           ? TextInputAction.next
@@ -375,9 +378,7 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
       controller: widget.etCList[i],
       textCapitalization: TextCapitalization.words,
       onSubmitted: (value) {
-        widget.fDbH
-            .getGiocatore(value, widget.gioco)
-            .then((Giocatore g) {
+        widget.fDbH.getGiocatore(value, widget.gioco).then((Giocatore g) {
           setState(() {
             widget.isLoading[i] = true;
             widget.isLoading[i] = false;
@@ -440,9 +441,10 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
     );
   }
 
-  Visibility tabellaPunteggi(Giocatore giocatore) {
+  Widget tabellaPunteggi(Giocatore giocatore) {
+    if (giocatore.gioco == null) return new Container();
     return Visibility(
-        visible: true, //haveGiocatore(giocatore),
+        visible: giocatore.gioco != null,
         child: Padding(
             padding: EdgeInsets.only(top: 16.0, bottom: 16.0),
             child: Table(
@@ -470,21 +472,27 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
                 TableRow(children: [
                   Center(
                     child: Text(
-                      "20",
+                      giocatore.gioco.partiteGiocate > 0
+                          ? giocatore.gioco.partiteGiocate.toString()
+                          : "N/D",
                       style: TextStyle(fontStyle: FontStyle.italic),
                       textAlign: TextAlign.center,
                     ),
                   ),
                   Center(
                     child: Text(
-                      "20",
+                      giocatore.gioco.partiteGiocate > 0
+                          ? giocatore.gioco.partiteVinte.toString()
+                          : "N/D",
                       style: TextStyle(fontStyle: FontStyle.italic),
                       textAlign: TextAlign.center,
                     ),
                   ),
                   Center(
                     child: Text(
-                      "20",
+                      giocatore.gioco.partiteGiocate > 0
+                          ? getPercentage(giocatore)
+                          : "N/D",
                       style: TextStyle(fontStyle: FontStyle.italic),
                       textAlign: TextAlign.center,
                     ),
@@ -505,5 +513,16 @@ class AggiungiGIocatoriScopaState extends State<AggiungiGiocatoriScopa> {
       };
     } else
       return null;
+  }
+
+  String getPercentage(Giocatore giocatore) {
+    return (giocatore.gioco.partiteGiocate > 0 &&
+                    giocatore.gioco.partiteVinte == 0
+                ? 0
+                : (giocatore.gioco.partiteVinte /
+                        giocatore.gioco.partiteGiocate) *
+                    100)
+            .toStringAsFixed(2) +
+        '%';
   }
 }

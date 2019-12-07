@@ -57,7 +57,10 @@ class DatabaseProvider {
 
   Future<int> addUser(Giocatore g) async {
     Database db = await database;
-    return db.insert("Giocatore", g.giocatoreAsDbMap());
+    int id = await db.insert("Giocatore", g.giocatoreAsDbMap()).then((id) {
+      return id;
+    });
+    return id;
   }
 
   Future<int> updateDarkMode(Giocatore g) async {
@@ -95,6 +98,17 @@ class DatabaseProvider {
         await db.insert("Gioco", asDbMap);
       });
     });
+  }
+
+  void updateGiochi(List<Gioco> giochi, String nomePlayer) async {
+    Database db = await database;
+    Batch batch = db.batch();
+    for (Gioco g in giochi) {
+      Map asDbMap = g.asDbMap();
+      asDbMap["playerName"] = nomePlayer;
+      batch.update("Gioco", asDbMap);
+    }
+    batch.commit(noResult: true);
   }
 
   Future<List<Gioco>> selectAllGiochiByUsername(String name) async {

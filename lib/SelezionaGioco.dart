@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/Components/AvatarImage.dart';
 import 'package:flutter_app/Model/Giocatore.dart';
 
 import 'AggiungiGiocatori/aggiungigiocatori.dart';
 import 'Model/Constants.dart';
+import 'Model/DatabaseProvider.dart';
 
 class HomePage extends StatelessWidget {
   Giocatore giocatore;
@@ -17,21 +17,46 @@ class HomePage extends StatelessWidget {
         drawer: Drawer(
           child: ListView(
             children: <Widget>[
-              Container(
-                child: AvatarImage(giocatore.url, 120, 120),
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Center(
+                  child: Container(
+                    width: 120,
+                    height: 120,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                            fit: BoxFit.fill,
+                            image:
+                                (giocatore.url == null || giocatore.url.isEmpty)
+                                    ? AssetImage(IMAGE_PATH + 'defuser.png')
+                                    : NetworkImage(giocatore.url))),
+                  ),
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: Center(
                     child:
-                        Text(giocatore.name, style: TextStyle(fontSize: 18))),
+                        Text(giocatore.name, style: TextStyle(fontSize: 21))),
               ),
+              Divider(),
               ListTile(
                 onTap: () {},
-                title: Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: Text('Stats', style: TextStyle(fontSize: 18)),
-                ),
+                title: Text('Stats'),
+              ),
+              Divider(),
+              ListTile(
+                onTap: () {},
+                title: Text('Dark mode'),
+                leading: Icon(Icons.brightness_3),
+                trailing: Switch(
+                    value: giocatore.darkMode,
+                    onChanged: (value) {
+                      DatabaseProvider db = new DatabaseProvider();
+                      giocatore.darkMode = value;
+                      db.updateDarkMode(giocatore);
+                    }),
               ),
             ],
           ),
@@ -71,7 +96,7 @@ class SelezionaGioco extends StatelessWidget {
           child: Image.asset(getImageAssets(_giochi[index]))),
       trailing: Icon(Icons.keyboard_arrow_right),
       onTap: () {
-        onGiocoSelected(_giochi[index], context);
+        onGiocoSelected(_giochi[index],giocatore, context);
         /*DatabaseProvider db = new DatabaseProvider();
         List<Gioco> giochi = new List();
         giochi.add(new ScoponeGioco.giocoForFb());
@@ -121,8 +146,8 @@ class SelezionaGioco extends StatelessWidget {
     _giochi.add(PRESIDENTE);
   }
 
-  void onGiocoSelected(String gioco, context) {
+  void onGiocoSelected(String gioco, Giocatore giocatore, BuildContext context) {
     Navigator.push(context,
-        MaterialPageRoute(builder: (context) => SelezionaGiocatori(gioco)));
+        MaterialPageRoute(builder: (context) => SelezionaGiocatori(gioco,giocatore)));
   }
 }

@@ -8,11 +8,16 @@ class BriscolaAChiamata extends Gioco {
 
   BriscolaAChiamata.fromSnapshot(DataSnapshot datasnapshot)
       : super.fromSnapshot(datasnapshot) {
-    _puntiFatti = datasnapshot.value[PUNTI_FATTI];
+    _puntiFatti = datasnapshot.value[PUNTI_FATTI].toDouble();
   }
 
   BriscolaAChiamata.giocoForFb() : super.giocoForFb() {
     _puntiFatti = 0.0;
+  }
+
+  BriscolaAChiamata.fromDyanmicMap(Map<dynamic, dynamic> map)
+      : super.fromDynamicMap(map) {
+    _puntiFatti = map[PUNTI_FATTI].toDouble();
   }
 
   BriscolaAChiamata.fromDbMap(Map<String, dynamic> map) : super.fromDbMap(map) {
